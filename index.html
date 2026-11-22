@@ -932,9 +932,10 @@
         messages.forEach((msg, index) => {
             const div = document.createElement('div');
             const isMe = msg.sender === currentUser;
+           const canDelete = isMe || canKickMembers(currentUser);
             div.className = `message ${isMe ? 'sent' : 'received'}`;
 
-            const deleteBtnHtml = isMe
+            const deleteBtnHtml = canDelete
                 ? `<button class="delete-btn" onclick="deleteMessage(${index})" title="سڕینەوە">🗑️</button>`
                 : '';
 
