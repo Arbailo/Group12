@@ -476,7 +476,27 @@
     </div>
 </div>
 
+<!-- سکریپتەکانی Firebase Realtime Database SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBqm1Qz0lYlN0x6trQzw61dFxjYp9NJzvg",
+        authDomain: "group12-7ad7d.firebaseapp.com",
+        databaseURL: "https://group12-7ad7d-default-rtdb.firebaseio.com",
+        projectId: "group12-7ad7d",
+        storageBucket: "group12-7ad7d.firebasestorage.app",
+        messagingSenderId: "602966015780",
+        appId: "1:602966015780:web:2fefa9e197ac0d95cb7db1",
+        measurementId: "G-E3G9W3ZDGN"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const messagesRef = db.ref("group12_messages");
+    const membersRef = db.ref("group12_members");
+
     let currentUser = localStorage.getItem('chat_single_user') || '';
     let messages = JSON.parse(localStorage.getItem('chat_single_messages')) || [];
     let members = JSON.parse(localStorage.getItem('chat_single_members')) || [];
@@ -491,6 +511,12 @@
         const combined = [...new Set([...members, ...fromMessages, ...(currentUser ? [currentUser] : [])])];
         members = combined;
         localStorage.setItem('chat_single_members', JSON.stringify(members));
+
+        if (currentUser) {
+            const safeKey = encodeURIComponent(currentUser).replace(/\./g, '%2E');
+            membersRef.child(safeKey).set(currentUser);
+        }
+
         renderMembersInfo();
     }
 
@@ -549,6 +575,48 @@
         }
     });
 
+    function listenToRealtimeUpdates() {
+        membersRef.on('value', (snapshot) => {
+            const val = snapshot.val() || {};
+            const cloudMembers = Object.values(val).filter(Boolean);
+            const fromMessages = messages.map(m => m.sender).filter(Boolean);
+            members = [...new Set([...cloudMembers, ...fromMessages, ...(currentUser ? [currentUser] : [])])];
+            localStorage.setItem('chat_single_members', JSON.stringify(members));
+            renderMembersInfo();
+        });
+
+        messagesRef.on('child_added', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const msgId = snapshot.key;
+            const exists = messages.some(m => m.id === msgId);
+            if (!exists) {
+                messages.push({
+                    id: msgId,
+                    sender: data.sender || '',
+                    text: data.text || '',
+                    image: data.image || null,
+                    audio: data.audio || null,
+                    time: data.time || ''
+                });
+                localStorage.setItem('chat_single_messages', JSON.stringify(messages));
+                syncMembers();
+                renderMessages();
+            }
+        });
+
+        messagesRef.on('child_removed', (snapshot) => {
+            const removedId = snapshot.key;
+            const prevLen = messages.length;
+            messages = messages.filter(m => m.id !== removedId);
+            if (messages.length !== prevLen) {
+                localStorage.setItem('chat_single_messages', JSON.stringify(messages));
+                renderMessages();
+            }
+        });
+    }
+
     function init() {
         if (!currentUser) {
             document.getElementById('nameModal').style.display = 'flex';
@@ -558,6 +626,7 @@
         }
         syncMembers();
         renderMessages();
+        listenToRealtimeUpdates();
     }
 
     function saveUsername() {
@@ -633,9 +702,31 @@
     function deleteMessage(index) {
         if (index < 0 || index >= messages.length) return;
         if (confirm('دڵنیایت دەتەوێت ئەمە بسڕیتەوە؟')) {
+            const targetMsg = messages[index];
+            if (targetMsg && targetMsg.id) {
+                messagesRef.child(targetMsg.id).remove();
+            }
             messages.splice(index, 1);
             saveAndRender();
         }
+    }
+
+    function pushMessageToCloud(payload) {
+        const newRef = messagesRef.push();
+        const msgId = newRef.key;
+        const msgData = {
+            id: msgId,
+            sender: payload.sender,
+            text: payload.text || '',
+            image: payload.image || null,
+            audio: payload.audio || null,
+            time: payload.time || getCurrentTime(),
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        messages.push(msgData);
+        saveAndRender();
+        newRef.set(msgData);
     }
 
     function sendMessage() {
@@ -647,14 +738,13 @@
         const input = document.getElementById('messageInput');
         const text = input.value.trim();
         if (text) {
-            messages.push({
+            pushMessageToCloud({
                 sender: currentUser,
                 text: text,
                 image: null,
                 audio: null,
                 time: getCurrentTime()
             });
-            saveAndRender();
             input.value = '';
         }
     }
@@ -670,14 +760,13 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                messages.push({
+                pushMessageToCloud({
                     sender: currentUser,
                     text: '',
                     image: e.target.result,
                     audio: null,
                     time: getCurrentTime()
                 });
-                saveAndRender();
             };
             reader.readAsDataURL(file);
         }
@@ -714,14 +803,13 @@
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
                     reader.onloadend = function() {
-                        messages.push({
+                        pushMessageToCloud({
                             sender: currentUser,
                             text: '',
                             image: null,
                             audio: reader.result,
                             time: getCurrentTime()
                         });
-                        saveAndRender();
                     };
                     reader.readAsDataURL(audioBlob);
 
