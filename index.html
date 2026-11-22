@@ -69,13 +69,13 @@
             gap: 8px;
         }
 
-        .members-btn {
+        .members-btn, .leave-btn {
             background-color: #128c7e;
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 6px 12px;
+            padding: 6px 11px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -83,6 +83,15 @@
 
         .members-btn:hover {
             background-color: #1aa393;
+        }
+
+        .leave-btn {
+            background-color: rgba(217, 48, 37, 0.85);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .leave-btn:hover {
+            background-color: #c5221f;
         }
 
         .user-badge {
@@ -99,7 +108,7 @@
             position: absolute;
             top: 66px;
             left: 18px;
-            width: 240px;
+            width: 295px;
             background-color: #ffffff;
             color: #222;
             border-radius: 10px;
@@ -127,15 +136,16 @@
 
         .members-dropdown ul {
             list-style: none;
-            max-height: 200px;
+            max-height: 240px;
             overflow-y: auto;
         }
 
         .members-dropdown li {
-            padding: 6px 4px;
-            font-size: 14px;
+            padding: 7px 4px;
+            font-size: 13px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 8px;
             border-bottom: 1px solid #f7f7f7;
         }
@@ -144,12 +154,76 @@
             border-bottom: none;
         }
 
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+        }
+
         .member-dot {
             width: 8px;
             height: 8px;
             background-color: #25d366;
             border-radius: 50%;
             flex-shrink: 0;
+        }
+
+        .role-tag {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .role-admin {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .role-mod {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .member-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .mod-btn, .kick-btn {
+            border: none;
+            border-radius: 6px;
+            padding: 3px 7px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .mod-btn {
+            background-color: #e8f4f8;
+            color: #075e54;
+        }
+
+        .mod-btn:hover {
+            background-color: #cce7f0;
+        }
+
+        .mod-btn.active-mod {
+            background-color: #fff0c2;
+            color: #856404;
+        }
+
+        .kick-btn {
+            background-color: #fdecea;
+            color: #d93025;
+        }
+
+        .kick-btn:hover {
+            background-color: #fad2cf;
         }
 
         /* ناوچەی نامەکان */
@@ -452,6 +526,7 @@
             <button class="members-btn" id="membersBtn" onclick="toggleMembersDropdown(event)">
                 ئەندامان (<span id="headerMemberCount">0</span>)
             </button>
+            <button class="leave-btn" id="leaveBtn" onclick="leaveGroup()" title="چوونە دەرەوە">چوونە دەرەوە</button>
             <div class="user-badge" id="currentUserBadge"></div>
         </div>
 
@@ -496,28 +571,77 @@
     const db = firebase.database();
     const messagesRef = db.ref("group12_messages");
     const membersRef = db.ref("group12_members");
+    const adminsRef = db.ref("group12_admins");
+    const moderatorsRef = db.ref("group12_moderators");
+    const bannedRef = db.ref("group12_banned");
 
     let currentUser = localStorage.getItem('chat_single_user') || '';
     let messages = JSON.parse(localStorage.getItem('chat_single_messages')) || [];
     let members = JSON.parse(localStorage.getItem('chat_single_members')) || [];
+    let adminsList = [];
+    let moderatorsList = [];
+    let bannedList = [];
 
     // داتای تۆمارکردنی ڤۆیس
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
 
-    function syncMembers() {
-        const fromMessages = messages.map(m => m.sender).filter(Boolean);
-        const combined = [...new Set([...members, ...fromMessages, ...(currentUser ? [currentUser] : [])])];
-        members = combined;
-        localStorage.setItem('chat_single_members', JSON.stringify(members));
+    function getSafeKey(name) {
+        return encodeURIComponent(String(name).trim()).replace(/\./g, '%2E');
+    }
 
-        if (currentUser) {
-            const safeKey = encodeURIComponent(currentUser).replace(/\./g, '%2E');
-            membersRef.child(safeKey).set(currentUser);
+    function isMainAdmin(name) {
+        return Boolean(name) && adminsList.includes(name);
+    }
+
+    function isModerator(name) {
+        return Boolean(name) && moderatorsList.includes(name);
+    }
+
+    function canKickMembers(name) {
+        return isMainAdmin(name) || isModerator(name);
+    }
+
+    function isBanned(name) {
+        return Boolean(name) && bannedList.includes(name);
+    }
+
+    function rebuildMembersList(cloudMembers = []) {
+        const fromMessages = messages
+            .map(m => m.sender)
+            .filter(name => Boolean(name) && !isBanned(name));
+
+        const activeCloud = cloudMembers.filter(name => Boolean(name) && !isBanned(name));
+        const currentAllowed = currentUser && !isBanned(currentUser) ? [currentUser] : [];
+
+        members = [...new Set([...activeCloud, ...fromMessages, ...currentAllowed])];
+        localStorage.setItem('chat_single_members', JSON.stringify(members));
+        renderMembersInfo();
+    }
+
+    function syncMembers() {
+        if (currentUser && isBanned(currentUser)) {
+            alert('تۆ لە گرووپ دەرکراویت و ناتوانیت بەم ناوە بەشدار بیت.');
+            currentUser = '';
+            localStorage.removeItem('chat_single_user');
+            document.getElementById('currentUserBadge').innerText = '';
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
         }
 
-        renderMembersInfo();
+        if (currentUser) {
+            membersRef.child(getSafeKey(currentUser)).set(currentUser);
+            adminsRef.once('value', (snap) => {
+                const val = snap.val() || {};
+                const currentAdmins = Object.values(val).filter(Boolean);
+                if (currentAdmins.length === 0) {
+                    adminsRef.child(getSafeKey(currentUser)).set(currentUser);
+                }
+            });
+        }
+
+        rebuildMembersList(members);
     }
 
     function renderMembersInfo() {
@@ -533,11 +657,125 @@
             return;
         }
 
+        const iAmAdmin = isMainAdmin(currentUser);
+        const iCanKick = canKickMembers(currentUser);
+
         members.forEach(name => {
             const li = document.createElement('li');
-            li.innerHTML = `<span class="member-dot"></span><span>${name}</span>`;
+
+            let badgeHtml = '';
+            if (isMainAdmin(name)) {
+                badgeHtml = `<span class="role-tag role-admin">ئەدمین</span>`;
+            } else if (isModerator(name)) {
+                badgeHtml = `<span class="role-tag role-mod">مۆدێریتەر</span>`;
+            }
+
+            let actionsHtml = '';
+            const targetIsAdmin = isMainAdmin(name);
+            const targetIsMod = isModerator(name);
+            const isSelf = name === currentUser;
+
+            if (iAmAdmin && !isSelf && !targetIsAdmin) {
+                actionsHtml += `
+                    <button class="mod-btn ${targetIsMod ? 'active-mod' : ''}" onclick="toggleModerator('${escapeJs(name)}')">
+                        ${targetIsMod ? 'لابردنی مۆد' : 'کردنە مۆد'}
+                    </button>
+                `;
+            }
+
+            if (iCanKick && !isSelf && !targetIsAdmin && !( !iAmAdmin && targetIsMod )) {
+                actionsHtml += `
+                    <button class="kick-btn" onclick="kickMember('${escapeJs(name)}')" title="دەرکردن">دەرکردن</button>
+                `;
+            }
+
+            li.innerHTML = `
+                <div class="member-info">
+                    <span class="member-dot"></span>
+                    <span>${escapeHtml(name)}</span>
+                    ${badgeHtml}
+                </div>
+                <div class="member-actions">${actionsHtml}</div>
+            `;
             list.appendChild(li);
         });
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.innerText = text;
+        return div.innerHTML;
+    }
+
+    function escapeJs(text) {
+        return String(text).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    function toggleModerator(targetName) {
+        if (!isMainAdmin(currentUser)) {
+            alert('تەنها ئەدمینی سەرەکی دەتوانێت مۆدێریتەر دیاری بکات.');
+            return;
+        }
+        if (!targetName || targetName === currentUser || isMainAdmin(targetName)) return;
+
+        const key = getSafeKey(targetName);
+        if (isModerator(targetName)) {
+            moderatorsRef.child(key).remove();
+        } else {
+            moderatorsRef.child(key).set(targetName);
+        }
+    }
+
+    function kickMember(targetName) {
+        if (!canKickMembers(currentUser)) {
+            alert('تۆ دەسەڵاتی دەرکردنی ئەندامت نییە.');
+            return;
+        }
+        if (!targetName || targetName === currentUser || isMainAdmin(targetName)) return;
+        if (!isMainAdmin(currentUser) && isModerator(targetName)) {
+            alert('مۆدێریتەر ناتوانێت مۆدێریتەرێکی تر دەربکات.');
+            return;
+        }
+
+        if (confirm(`دڵنیایت دەتەوێت "${targetName}" لە گرووپ دەربکەیت؟`)) {
+            const key = getSafeKey(targetName);
+            bannedRef.child(key).set(targetName);
+            moderatorsRef.child(key).remove();
+            membersRef.child(key).remove();
+            members = members.filter(m => m !== targetName);
+            localStorage.setItem('chat_single_members', JSON.stringify(members));
+            renderMembersInfo();
+        }
+    }
+
+    function leaveGroup() {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+
+        if (!confirm('دڵنیایت دەتەوێت لە گرووپ بچیتە دەرەوە؟')) return;
+
+        const leavingUser = currentUser;
+        const key = getSafeKey(leavingUser);
+
+        membersRef.child(key).remove();
+        if (!isMainAdmin(leavingUser)) {
+            moderatorsRef.child(key).remove();
+        }
+
+        members = members.filter(m => m !== leavingUser);
+        localStorage.setItem('chat_single_members', JSON.stringify(members));
+
+        currentUser = '';
+        localStorage.removeItem('chat_single_user');
+        document.getElementById('currentUserBadge').innerText = '';
+        document.getElementById('membersDropdown').classList.remove('show');
+        renderMembersInfo();
+        renderMessages();
+        document.getElementById('nameModal').style.display = 'flex';
+        document.getElementById('usernameInput').value = '';
+        document.getElementById('usernameInput').focus();
     }
 
     function toggleMembersDropdown(event) {
@@ -575,14 +813,40 @@
         }
     });
 
+    let latestCloudMembers = [];
+
     function listenToRealtimeUpdates() {
+        adminsRef.on('value', (snapshot) => {
+            const val = snapshot.val() || {};
+            adminsList = Object.values(val).filter(Boolean);
+            renderMembersInfo();
+        });
+
+        moderatorsRef.on('value', (snapshot) => {
+            const val = snapshot.val() || {};
+            moderatorsList = Object.values(val).filter(Boolean);
+            renderMembersInfo();
+        });
+
+        bannedRef.on('value', (snapshot) => {
+            const val = snapshot.val() || {};
+            bannedList = Object.values(val).filter(Boolean);
+
+            if (currentUser && isBanned(currentUser)) {
+                alert('تۆ لە گرووپ دەرکراویت.');
+                currentUser = '';
+                localStorage.removeItem('chat_single_user');
+                document.getElementById('currentUserBadge').innerText = '';
+                document.getElementById('nameModal').style.display = 'flex';
+            }
+
+            rebuildMembersList(latestCloudMembers);
+        });
+
         membersRef.on('value', (snapshot) => {
             const val = snapshot.val() || {};
-            const cloudMembers = Object.values(val).filter(Boolean);
-            const fromMessages = messages.map(m => m.sender).filter(Boolean);
-            members = [...new Set([...cloudMembers, ...fromMessages, ...(currentUser ? [currentUser] : [])])];
-            localStorage.setItem('chat_single_members', JSON.stringify(members));
-            renderMembersInfo();
+            latestCloudMembers = Object.values(val).filter(Boolean);
+            rebuildMembersList(latestCloudMembers);
         });
 
         messagesRef.on('child_added', (snapshot) => {
@@ -601,7 +865,7 @@
                     time: data.time || ''
                 });
                 localStorage.setItem('chat_single_messages', JSON.stringify(messages));
-                syncMembers();
+                rebuildMembersList(latestCloudMembers);
                 renderMessages();
             }
         });
@@ -624,7 +888,7 @@
         } else {
             document.getElementById('currentUserBadge').innerText = currentUser;
         }
-        syncMembers();
+        rebuildMembersList();
         renderMessages();
         listenToRealtimeUpdates();
     }
@@ -636,6 +900,11 @@
             alert('تکایە ناوێک بنووسە!');
             return;
         }
+        if (isBanned(name)) {
+            alert('ئەم ناوە لە گرووپ دەرکراوە؛ ناوێکی تر بنووسە.');
+            return;
+        }
+
         currentUser = name;
         localStorage.setItem('chat_single_user', currentUser);
         document.getElementById('currentUserBadge').innerText = currentUser;
@@ -671,13 +940,13 @@
 
             let content = `
                 <div class="message-top">
-                    <span class="sender-name">${msg.sender}</span>
+                    <span class="sender-name">${escapeHtml(msg.sender)}</span>
                     ${deleteBtnHtml}
                 </div>
             `;
 
             if (msg.text) {
-                content += `<div>${msg.text}</div>`;
+                content += `<div>${escapeHtml(msg.text)}</div>`;
             }
             if (msg.image) {
                 content += `<img src="${msg.image}" alt="ڕەسمی نێردراو" onclick="openImageViewer(this.src)">`;
@@ -688,7 +957,7 @@
 
             content += `
                 <div class="message-footer">
-                    <span class="timestamp">${msg.time}</span>
+                    <span class="timestamp">${escapeHtml(msg.time)}</span>
                 </div>
             `;
 
@@ -838,7 +1107,7 @@
 
     function saveAndRender() {
         localStorage.setItem('chat_single_messages', JSON.stringify(messages));
-        syncMembers();
+        rebuildMembersList(latestCloudMembers);
         renderMessages();
     }
 
