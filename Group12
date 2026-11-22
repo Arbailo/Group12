@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بەرنامەی چاتی گروپی</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #e5ddd5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 650px;
+            height: 100vh;
+            max-height: 900px;
+            background-color: #efeae2;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (min-width: 651px) {
+            .app-container {
+                height: 90vh;
+                border-radius: 12px;
+            }
+        }
+
+        /* هێدەری سەرەوە */
+        .chat-header {
+            background-color: #075e54;
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .chat-header h3 {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .chat-header small {
+            font-size: 12px;
+            color: #d9f2ee;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .members-btn {
+            background-color: #128c7e;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .members-btn:hover {
+            background-color: #1aa393;
+        }
+
+        .user-badge {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* لیستی ئەندامان */
+        .members-dropdown {
+            display: none;
+            position: absolute;
+            top: 66px;
+            left: 18px;
+            width: 240px;
+            background-color: #ffffff;
+            color: #222;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 14px;
+            z-index: 50;
+            border: 1px solid #e0e0e0;
+        }
+
+        .members-dropdown.show {
+            display: block;
+        }
+
+        .members-dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            color: #075e54;
+            font-size: 14px;
+        }
+
+        .members-dropdown ul {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .members-dropdown li {
+            padding: 6px 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #f7f7f7;
+        }
+
+        .members-dropdown li:last-child {
+            border-bottom: none;
+        }
+
+        .member-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #25d366;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ناوچەی نامەکان */
+        .messages-container {
+            flex: 1;
+            padding: 18px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+        }
+
+        .message.sent {
+            background-color: #dcf8c6;
+            align-self: flex-start;
+            border-top-right-radius: 0;
+        }
+
+        .message.received {
+            background-color: #ffffff;
+            align-self: flex-end;
+            border-top-left-radius: 0;
+        }
+
+        .message-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .sender-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #075e54;
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: color 0.15s, background-color 0.15s;
+        }
+
+        .delete-btn:hover {
+            color: #d93025;
+            background-color: rgba(217, 48, 37, 0.1);
+        }
+
+        .message img {
+            max-width: 100%;
+            max-height: 260px;
+            border-radius: 8px;
+            margin-top: 5px;
+            display: block;
+            cursor: zoom-in;
+            transition: transform 0.15s;
+        }
+
+        .message img:hover {
+            transform: scale(1.01);
+        }
+
+        .message audio {
+            width: 230px;
+            max-width: 100%;
+            height: 36px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .message-footer {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 4px;
+        }
+
+        .timestamp {
+            font-size: 10px;
+            color: #777;
+        }
+
+        /* بەشی ناردنی نامە، ڕەسم، و ڤۆیس */
+        .input-area {
+            background-color: #f0f2f5;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-area input[type="text"] {
+            flex: 1;
+            min-width: 0;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 24px;
+            outline: none;
+            font-size: 15px;
+            background-color: #ffffff;
+        }
+
+        .icon-btn {
+            background-color: #128c7e;
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            transition: background-color 0.2s, transform 0.15s;
+        }
+
+        .icon-btn:hover {
+            opacity: 0.92;
+        }
+
+        .voice-btn.recording {
+            background-color: #d93025;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .send-btn {
+            background-color: #075e54;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            opacity: 0.92;
+        }
+
+        /* مۆداڵی دانانی ناو بۆ یەکەمجار */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.65);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .modal-box h2 {
+            color: #075e54;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .modal-box p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 14px;
+        }
+
+        .modal-box input:focus {
+            border-color: #128c7e;
+        }
+
+        .modal-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: #075e54;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-box button:hover {
+            background-color: #128c7e;
+        }
+
+        /* پەنجەرەی سەیرکردنی وێنە بە گەورەیی */
+        .image-viewer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .image-viewer-overlay.show {
+            display: flex;
+        }
+
+        .image-viewer-overlay img {
+            max-width: 95%;
+            max-height: 88vh;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            object-fit: contain;
+        }
+
+        .close-viewer-btn {
+            position: fixed;
+            top: 20px;
+            left: 24px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-viewer-btn:hover {
+            background-color: rgba(255, 255, 255, 0.35);
+        }
+    </style>
+</head>
+<body>
+
+<!-- پەنجەرەی دانانی ناو کاتێک بەکارهێنەر دێتە ناوەوە -->
+<div class="modal-overlay" id="nameModal" style="display: none;">
+    <div class="modal-box">
+        <h2>بەخێربێیت</h2>
+        <p>تکایە ناوی خۆت بنووسە بۆ چوونە ناو چاتەکە:</p>
+        <input type="text" id="usernameInput" placeholder="ناوەکەت بنووسە..." onkeypress="handleNameKeyPress(event)">
+        <button onclick="saveUsername()">چوونە ناو</button>
+    </div>
+</div>
+
+<!-- پەنجەرەی سەیرکردنی وێنە -->
+<div class="image-viewer-overlay" id="imageViewer" onclick="closeImageViewer(event)">
+    <button class="close-viewer-btn" onclick="closeImageViewer(event, true)" title="داخستن">×</button>
+    <img id="viewerImage" src="" alt="سەیرکردنی وێنە">
+</div>
+
+<div class="app-container">
+    <div class="chat-header">
+        <div>
+            <h3>چاتی گروپی</h3>
+            <small id="statusText">ناردنی نامە، وێنە و ڤۆیس</small>
+        </div>
+        <div class="header-actions">
+            <button class="members-btn" id="membersBtn" onclick="toggleMembersDropdown(event)">
+                ئەندامان (<span id="headerMemberCount">0</span>)
+            </button>
+            <div class="user-badge" id="currentUserBadge"></div>
+        </div>
+
+        <div class="members-dropdown" id="membersDropdown" onclick="event.stopPropagation()">
+            <div class="members-dropdown-header">
+                <span>ژمارەی ئەندامان: <span id="dropdownMemberCount">0</span></span>
+            </div>
+            <ul id="membersDropdownList"></ul>
+        </div>
+    </div>
+
+    <div class="messages-container" id="messagesContainer"></div>
+
+    <div class="input-area">
+        <label for="imageInput" class="icon-btn" title="ناردنی ڕەسم">📷</label>
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="sendImage(event)">
+
+        <button type="button" class="icon-btn voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()" title="تۆمارکردنی ڤۆیس">🎤</button>
+
+        <input type="text" id="messageInput" placeholder="نامەیەک بنووسە..." onkeypress="handleMessageKeyPress(event)">
+        <button class="send-btn" onclick="sendMessage()">ناردن</button>
+    </div>
+</div>
+
+<script>
+    let currentUser = localStorage.getItem('chat_single_user') || '';
+    let messages = JSON.parse(localStorage.getItem('chat_single_messages')) || [];
+    let members = JSON.parse(localStorage.getItem('chat_single_members')) || [];
+
+    // داتای تۆمارکردنی ڤۆیس
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    function syncMembers() {
+        const fromMessages = messages.map(m => m.sender).filter(Boolean);
+        const combined = [...new Set([...members, ...fromMessages, ...(currentUser ? [currentUser] : [])])];
+        members = combined;
+        localStorage.setItem('chat_single_members', JSON.stringify(members));
+        renderMembersInfo();
+    }
+
+    function renderMembersInfo() {
+        const count = members.length;
+        document.getElementById('headerMemberCount').innerText = count;
+        document.getElementById('dropdownMemberCount').innerText = count;
+
+        const list = document.getElementById('membersDropdownList');
+        list.innerHTML = '';
+
+        if (count === 0) {
+            list.innerHTML = '<li>هیچ ئەندامێک نییە</li>';
+            return;
+        }
+
+        members.forEach(name => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="member-dot"></span><span>${name}</span>`;
+            list.appendChild(li);
+        });
+    }
+
+    function toggleMembersDropdown(event) {
+        event.stopPropagation();
+        const dropdown = document.getElementById('membersDropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    document.addEventListener('click', function() {
+        const dropdown = document.getElementById('membersDropdown');
+        if (dropdown) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    function openImageViewer(src) {
+        const viewer = document.getElementById('imageViewer');
+        const img = document.getElementById('viewerImage');
+        img.src = src;
+        viewer.classList.add('show');
+    }
+
+    function closeImageViewer(event, forceClose = false) {
+        const viewer = document.getElementById('imageViewer');
+        if (forceClose || event.target === viewer) {
+            viewer.classList.remove('show');
+            document.getElementById('viewerImage').src = '';
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            document.getElementById('imageViewer').classList.remove('show');
+            document.getElementById('membersDropdown').classList.remove('show');
+        }
+    });
+
+    function init() {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            document.getElementById('usernameInput').focus();
+        } else {
+            document.getElementById('currentUserBadge').innerText = currentUser;
+        }
+        syncMembers();
+        renderMessages();
+    }
+
+    function saveUsername() {
+        const input = document.getElementById('usernameInput');
+        const name = input.value.trim();
+        if (!name) {
+            alert('تکایە ناوێک بنووسە!');
+            return;
+        }
+        currentUser = name;
+        localStorage.setItem('chat_single_user', currentUser);
+        document.getElementById('currentUserBadge').innerText = currentUser;
+        document.getElementById('nameModal').style.display = 'none';
+        document.getElementById('messageInput').focus();
+        syncMembers();
+        renderMessages();
+    }
+
+    function handleNameKeyPress(event) {
+        if (event.key === 'Enter') {
+            saveUsername();
+        }
+    }
+
+    function getCurrentTime() {
+        const now = new Date();
+        return now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+    }
+
+    function renderMessages() {
+        const container = document.getElementById('messagesContainer');
+        container.innerHTML = '';
+
+        messages.forEach((msg, index) => {
+            const div = document.createElement('div');
+            const isMe = msg.sender === currentUser;
+            div.className = `message ${isMe ? 'sent' : 'received'}`;
+
+            const deleteBtnHtml = isMe
+                ? `<button class="delete-btn" onclick="deleteMessage(${index})" title="سڕینەوە">🗑️</button>`
+                : '';
+
+            let content = `
+                <div class="message-top">
+                    <span class="sender-name">${msg.sender}</span>
+                    ${deleteBtnHtml}
+                </div>
+            `;
+
+            if (msg.text) {
+                content += `<div>${msg.text}</div>`;
+            }
+            if (msg.image) {
+                content += `<img src="${msg.image}" alt="ڕەسمی نێردراو" onclick="openImageViewer(this.src)">`;
+            }
+            if (msg.audio) {
+                content += `<audio controls src="${msg.audio}"></audio>`;
+            }
+
+            content += `
+                <div class="message-footer">
+                    <span class="timestamp">${msg.time}</span>
+                </div>
+            `;
+
+            div.innerHTML = content;
+            container.appendChild(div);
+        });
+
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function deleteMessage(index) {
+        if (index < 0 || index >= messages.length) return;
+        if (confirm('دڵنیایت دەتەوێت ئەمە بسڕیتەوە؟')) {
+            messages.splice(index, 1);
+            saveAndRender();
+        }
+    }
+
+    function sendMessage() {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if (text) {
+            messages.push({
+                sender: currentUser,
+                text: text,
+                image: null,
+                audio: null,
+                time: getCurrentTime()
+            });
+            saveAndRender();
+            input.value = '';
+        }
+    }
+
+    function sendImage(event) {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            event.target.value = '';
+            return;
+        }
+
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                messages.push({
+                    sender: currentUser,
+                    text: '',
+                    image: e.target.result,
+                    audio: null,
+                    time: getCurrentTime()
+                });
+                saveAndRender();
+            };
+            reader.readAsDataURL(file);
+        }
+        event.target.value = '';
+    }
+
+    async function toggleVoiceRecording() {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+
+        const voiceBtn = document.getElementById('voiceBtn');
+        const statusText = document.getElementById('statusText');
+
+        if (!isRecording) {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('بڕاوزەرەکەت پشتگیری تۆمارکردنی ڤۆیس ناکات.');
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function() {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        messages.push({
+                            sender: currentUser,
+                            text: '',
+                            image: null,
+                            audio: reader.result,
+                            time: getCurrentTime()
+                        });
+                        saveAndRender();
+                    };
+                    reader.readAsDataURL(audioBlob);
+
+                    // داخستنی مایکرۆفۆن دوای تەواوبوون
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                voiceBtn.classList.add('recording');
+                voiceBtn.innerText = '⏹';
+                statusText.innerText = 'خەریکی تۆمارکردنی ڤۆیسە... (دوبارە دابگرە بۆ ناردن)';
+            } catch (err) {
+                alert('تکایە مۆڵەتی مایکرۆفۆن بدە بۆ تۆمارکردنی ڤۆیس.');
+            }
+        } else {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            isRecording = false;
+            voiceBtn.classList.remove('recording');
+            voiceBtn.innerText = '🎤';
+            statusText.innerText = 'ناردنی نامە، وێنە و ڤۆیس';
+        }
+    }
+
+    function saveAndRender() {
+        localStorage.setItem('chat_single_messages', JSON.stringify(messages));
+        syncMembers();
+        renderMessages();
+    }
+
+    function handleMessageKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
