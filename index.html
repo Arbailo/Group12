@@ -51,6 +51,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: relative;
             z-index: 10;
+            gap: 8px;
         }
 
         .chat-header h3 {
@@ -66,7 +67,8 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
+            flex-wrap: wrap;
         }
 
         .members-btn, .leave-btn {
@@ -496,174 +498,174 @@
         .close-viewer-btn:hover {
             background-color: rgba(255, 255, 255, 0.35);
         }
-        
-    /* دۆخی تاریک (Dark Mode) */
-.theme-btn {
-    background-color: rgba(255, 255, 255, 0.16);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s, transform 0.15s;
-}
 
-.theme-btn:hover {
-    background-color: rgba(255, 255, 255, 0.28);
-    transform: scale(1.05);
-}
+        /* دۆخی تاریک (Dark Mode) */
+        .theme-btn {
+            background-color: rgba(255, 255, 255, 0.16);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, transform 0.15s;
+        }
 
-body.dark-mode {
-    background-color: #0b141a;
-}
+        .theme-btn:hover {
+            background-color: rgba(255, 255, 255, 0.28);
+            transform: scale(1.05);
+        }
 
-body.dark-mode .app-container {
-    background-color: #111b21;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55);
-}
+        body.dark-mode {
+            background-color: #0b141a;
+        }
 
-body.dark-mode .chat-header {
-    background-color: #202c33;
-    border-bottom: 1px solid #2a3942;
-}
+        body.dark-mode .app-container {
+            background-color: #111b21;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55);
+        }
 
-body.dark-mode .chat-header small {
-    color: #8696a0;
-}
+        body.dark-mode .chat-header {
+            background-color: #202c33;
+            border-bottom: 1px solid #2a3942;
+        }
 
-body.dark-mode .members-btn {
-    background-color: #2a3942;
-    border-color: rgba(255, 255, 255, 0.12);
-}
+        body.dark-mode .chat-header small {
+            color: #8696a0;
+        }
 
-body.dark-mode .members-btn:hover {
-    background-color: #374854;
-}
+        body.dark-mode .members-btn {
+            background-color: #2a3942;
+            border-color: rgba(255, 255, 255, 0.12);
+        }
 
-body.dark-mode .members-dropdown {
-    background-color: #202c33;
-    color: #e9edef;
-    border-color: #2a3942;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-}
+        body.dark-mode .members-btn:hover {
+            background-color: #374854;
+        }
 
-body.dark-mode .members-dropdown-header {
-    color: #00a884;
-    border-bottom-color: #2a3942;
-}
+        body.dark-mode .members-dropdown {
+            background-color: #202c33;
+            color: #e9edef;
+            border-color: #2a3942;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+        }
 
-body.dark-mode .members-dropdown li {
-    border-bottom-color: #2a3942;
-}
+        body.dark-mode .members-dropdown-header {
+            color: #00a884;
+            border-bottom-color: #2a3942;
+        }
 
-body.dark-mode .mod-btn {
-    background-color: #2a3942;
-    color: #00a884;
-}
+        body.dark-mode .members-dropdown li {
+            border-bottom-color: #2a3942;
+        }
 
-body.dark-mode .mod-btn:hover {
-    background-color: #374854;
-}
+        body.dark-mode .mod-btn {
+            background-color: #2a3942;
+            color: #00a884;
+        }
 
-body.dark-mode .mod-btn.active-mod {
-    background-color: #3b3214;
-    color: #ffd166;
-}
+        body.dark-mode .mod-btn:hover {
+            background-color: #374854;
+        }
 
-body.dark-mode .kick-btn {
-    background-color: #3a1d20;
-    color: #ff6b6b;
-}
+        body.dark-mode .mod-btn.active-mod {
+            background-color: #3b3214;
+            color: #ffd166;
+        }
 
-body.dark-mode .kick-btn:hover {
-    background-color: #4d2428;
-}
+        body.dark-mode .kick-btn {
+            background-color: #3a1d20;
+            color: #ff6b6b;
+        }
 
-body.dark-mode .message.sent {
-    background-color: #005c4b;
-    color: #e9edef;
-}
+        body.dark-mode .kick-btn:hover {
+            background-color: #4d2428;
+        }
 
-body.dark-mode .message.received {
-    background-color: #202c33;
-    color: #e9edef;
-}
+        body.dark-mode .message.sent {
+            background-color: #005c4b;
+            color: #e9edef;
+        }
 
-body.dark-mode .sender-name {
-    color: #53bdeb;
-}
+        body.dark-mode .message.received {
+            background-color: #202c33;
+            color: #e9edef;
+        }
 
-body.dark-mode .timestamp {
-    color: #8696a0;
-}
+        body.dark-mode .sender-name {
+            color: #53bdeb;
+        }
 
-body.dark-mode .delete-btn {
-    color: #8696a0;
-}
+        body.dark-mode .timestamp {
+            color: #8696a0;
+        }
 
-body.dark-mode .delete-btn:hover {
-    color: #ff6b6b;
-    background-color: rgba(255, 107, 107, 0.12);
-}
+        body.dark-mode .delete-btn {
+            color: #8696a0;
+        }
 
-body.dark-mode .input-area {
-    background-color: #202c33;
-    border-top: 1px solid #2a3942;
-}
+        body.dark-mode .delete-btn:hover {
+            color: #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.12);
+        }
 
-body.dark-mode .input-area input[type="text"] {
-    background-color: #2a3942;
-    color: #e9edef;
-}
+        body.dark-mode .input-area {
+            background-color: #202c33;
+            border-top: 1px solid #2a3942;
+        }
 
-body.dark-mode .input-area input[type="text"]::placeholder {
-    color: #8696a0;
-}
+        body.dark-mode .input-area input[type="text"] {
+            background-color: #2a3942;
+            color: #e9edef;
+        }
 
-body.dark-mode .icon-btn {
-    background-color: #2a3942;
-    color: #e9edef;
-}
+        body.dark-mode .input-area input[type="text"]::placeholder {
+            color: #8696a0;
+        }
 
-body.dark-mode .voice-btn.recording {
-    background-color: #d93025;
-    color: white;
-}
+        body.dark-mode .icon-btn {
+            background-color: #2a3942;
+            color: #e9edef;
+        }
 
-body.dark-mode .send-btn {
-    background-color: #00a884;
-    color: #111b21;
-}
+        body.dark-mode .voice-btn.recording {
+            background-color: #d93025;
+            color: white;
+        }
 
-body.dark-mode .modal-box {
-    background-color: #202c33;
-    color: #e9edef;
-}
+        body.dark-mode .send-btn {
+            background-color: #00a884;
+            color: #111b21;
+        }
 
-body.dark-mode .modal-box h2 {
-    color: #00a884;
-}
+        body.dark-mode .modal-box {
+            background-color: #202c33;
+            color: #e9edef;
+        }
 
-body.dark-mode .modal-box p {
-    color: #aebac1;
-}
+        body.dark-mode .modal-box h2 {
+            color: #00a884;
+        }
 
-body.dark-mode .modal-box input {
-    background-color: #2a3942;
-    color: #e9edef;
-    border-color: #374854;
-}
+        body.dark-mode .modal-box p {
+            color: #aebac1;
+        }
 
-body.dark-mode .modal-box button {
-    background-color: #00a884;
-    color: #111b21;
-}
-   </style> 
+        body.dark-mode .modal-box input {
+            background-color: #2a3942;
+            color: #e9edef;
+            border-color: #374854;
+        }
+
+        body.dark-mode .modal-box button {
+            background-color: #00a884;
+            color: #111b21;
+        }
+    </style>
 </head>
 <body>
 
@@ -690,11 +692,11 @@ body.dark-mode .modal-box button {
             <small id="statusText">ناردنی نامە، وێنە و ڤۆیس</small>
         </div>
         <div class="header-actions">
-            <button class="members-btn" id="membersBtn" onclick="toggleMembersDropdown(event)"><button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="گۆڕینی دۆخی ڕوون و تاریک">🌙</button>
-                
+            <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="گۆڕینی دۆخی ڕوون و تاریک">🌙</button>
+            <button type="button" class="members-btn" id="membersBtn" onclick="toggleMembersDropdown(event)">
                 ئەندامان (<span id="headerMemberCount">0</span>)
             </button>
-            <button class="leave-btn" id="leaveBtn" onclick="leaveGroup()" title="چوونە دەرەوە">چوونە دەرەوە</button>
+            <button type="button" class="leave-btn" id="leaveBtn" onclick="leaveGroup()" title="چوونە دەرەوە">چوونە دەرەوە</button>
             <div class="user-badge" id="currentUserBadge"></div>
         </div>
 
@@ -715,7 +717,7 @@ body.dark-mode .modal-box button {
         <button type="button" class="icon-btn voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()" title="تۆمارکردنی ڤۆیس">🎤</button>
 
         <input type="text" id="messageInput" placeholder="نامەیەک بنووسە..." onkeypress="handleMessageKeyPress(event)">
-        <button class="send-btn" onclick="sendMessage()">ناردن</button>
+        <button type="button" class="send-btn" onclick="sendMessage()">ناردن</button>
     </div>
 </div>
 
@@ -742,6 +744,20 @@ body.dark-mode .modal-box button {
     const adminsRef = db.ref("group12_admins");
     const moderatorsRef = db.ref("group12_moderators");
     const bannedRef = db.ref("group12_banned");
+
+    function safeStorageSet(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (err) {
+            // ئەگەر localStorage پڕ بوو کۆنترین نامە ناوخۆییەکان کەم دەکەینەوە تا کێشە دروست نەبێت
+            if (key === 'chat_single_messages' && Array.isArray(messages) && messages.length > 15) {
+                try {
+                    messages = messages.slice(-15);
+                    localStorage.setItem(key, JSON.stringify(messages));
+                } catch (_) {}
+            }
+        }
+    }
 
     let currentUser = localStorage.getItem('chat_single_user') || '';
     let messages = JSON.parse(localStorage.getItem('chat_single_messages')) || [];
@@ -784,7 +800,7 @@ body.dark-mode .modal-box button {
         const currentAllowed = currentUser && !isBanned(currentUser) ? [currentUser] : [];
 
         members = [...new Set([...activeCloud, ...fromMessages, ...currentAllowed])];
-        localStorage.setItem('chat_single_members', JSON.stringify(members));
+        safeStorageSet('chat_single_members', JSON.stringify(members));
         renderMembersInfo();
     }
 
@@ -851,7 +867,7 @@ body.dark-mode .modal-box button {
                 `;
             }
 
-            if (iCanKick && !isSelf && !targetIsAdmin && !( !iAmAdmin && targetIsMod )) {
+            if (iCanKick && !isSelf && !targetIsAdmin && !(!iAmAdmin && targetIsMod)) {
                 actionsHtml += `
                     <button class="kick-btn" onclick="kickMember('${escapeJs(name)}')" title="دەرکردن">دەرکردن</button>
                 `;
@@ -911,7 +927,7 @@ body.dark-mode .modal-box button {
             moderatorsRef.child(key).remove();
             membersRef.child(key).remove();
             members = members.filter(m => m !== targetName);
-            localStorage.setItem('chat_single_members', JSON.stringify(members));
+            safeStorageSet('chat_single_members', JSON.stringify(members));
             renderMembersInfo();
         }
     }
@@ -933,7 +949,7 @@ body.dark-mode .modal-box button {
         }
 
         members = members.filter(m => m !== leavingUser);
-        localStorage.setItem('chat_single_members', JSON.stringify(members));
+        safeStorageSet('chat_single_members', JSON.stringify(members));
 
         currentUser = '';
         localStorage.removeItem('chat_single_user');
@@ -1032,7 +1048,7 @@ body.dark-mode .modal-box button {
                     audio: data.audio || null,
                     time: data.time || ''
                 });
-                localStorage.setItem('chat_single_messages', JSON.stringify(messages));
+                safeStorageSet('chat_single_messages', JSON.stringify(messages));
                 rebuildMembersList(latestCloudMembers);
                 renderMessages();
             }
@@ -1043,18 +1059,35 @@ body.dark-mode .modal-box button {
             const prevLen = messages.length;
             messages = messages.filter(m => m.id !== removedId);
             if (messages.length !== prevLen) {
-                localStorage.setItem('chat_single_messages', JSON.stringify(messages));
+                safeStorageSet('chat_single_messages', JSON.stringify(messages));
                 renderMessages();
             }
         });
     }
 
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-mode', isDark);
+        const btn = document.getElementById('themeBtn');
+        if (btn) {
+            btn.innerText = isDark ? '☀️' : '🌙';
+        }
+        safeStorageSet('chat_theme', isDark ? 'dark' : 'light');
+    }
+
+    function toggleTheme() {
+        const current = localStorage.getItem('chat_theme') || 'light';
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
     function init() {
+        applyTheme(localStorage.getItem('chat_theme') || 'light');
         if (!currentUser) {
             document.getElementById('nameModal').style.display = 'flex';
             document.getElementById('usernameInput').focus();
         } else {
             document.getElementById('currentUserBadge').innerText = currentUser;
+            syncMembers();
         }
         rebuildMembersList();
         renderMessages();
@@ -1074,7 +1107,7 @@ body.dark-mode .modal-box button {
         }
 
         currentUser = name;
-        localStorage.setItem('chat_single_user', currentUser);
+        safeStorageSet('chat_single_user', currentUser);
         document.getElementById('currentUserBadge').innerText = currentUser;
         document.getElementById('nameModal').style.display = 'none';
         document.getElementById('messageInput').focus();
@@ -1100,7 +1133,7 @@ body.dark-mode .modal-box button {
         messages.forEach((msg, index) => {
             const div = document.createElement('div');
             const isMe = msg.sender === currentUser;
-           const canDelete = isMe || canKickMembers(currentUser);
+            const canDelete = isMe || canKickMembers(currentUser);
             div.className = `message ${isMe ? 'sent' : 'received'}`;
 
             const deleteBtnHtml = canDelete
@@ -1121,7 +1154,7 @@ body.dark-mode .modal-box button {
                 content += `<img src="${msg.image}" alt="ڕەسمی نێردراو" onclick="openImageViewer(this.src)">`;
             }
             if (msg.audio) {
-                content += `<audio controls src="${msg.audio}"></audio>`;
+                content += `<audio controls playsinline src="${msg.audio}"></audio>`;
             }
 
             content += `
@@ -1164,7 +1197,9 @@ body.dark-mode .modal-box button {
 
         messages.push(msgData);
         saveAndRender();
-        newRef.set(msgData);
+        newRef.set(msgData).catch((err) => {
+            alert('هەڵە لە ناردنی نامە بۆ سێرڤەر: ' + err.message);
+        });
     }
 
     function sendMessage() {
@@ -1187,7 +1222,32 @@ body.dark-mode .modal-box button {
         }
     }
 
-    function sendImage(event) {
+    function compressImage(file, maxWidth = 800, quality = 0.7) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const scale = Math.min(1, maxWidth / img.width);
+                    const width = Math.max(1, Math.round(img.width * scale));
+                    const height = Math.max(1, Math.round(img.height * scale));
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function sendImage(event) {
         if (!currentUser) {
             document.getElementById('nameModal').style.display = 'flex';
             event.target.value = '';
@@ -1195,20 +1255,45 @@ body.dark-mode .modal-box button {
         }
 
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                pushMessageToCloud({
-                    sender: currentUser,
-                    text: '',
-                    image: e.target.result,
-                    audio: null,
-                    time: getCurrentTime()
-                });
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        const statusText = document.getElementById('statusText');
+        const prevStatus = statusText.innerText;
+
+        try {
+            statusText.innerText = 'خەریکی ئامادەکردن و ناردنی وێنەیە...';
+            const compressedBase64 = await compressImage(file, 800, 0.7);
+            pushMessageToCloud({
+                sender: currentUser,
+                text: '',
+                image: compressedBase64,
+                audio: null,
+                time: getCurrentTime()
+            });
+        } catch (err) {
+            alert('نەتوانرا وێنەکە بنێردرێت؛ تکایە وێنەیەکی تر تاقیبکەرەوە.');
+        } finally {
+            statusText.innerText = prevStatus;
+            event.target.value = '';
         }
-        event.target.value = '';
+    }
+
+    function getSupportedAudioMimeType() {
+        if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) {
+            return '';
+        }
+        const candidates = [
+            'audio/webm;codecs=opus',
+            'audio/webm',
+            'audio/mp4',
+            'audio/ogg;codecs=opus'
+        ];
+        for (const type of candidates) {
+            if (MediaRecorder.isTypeSupported(type)) {
+                return type;
+            }
+        }
+        return '';
     }
 
     async function toggleVoiceRecording() {
@@ -1221,38 +1306,49 @@ body.dark-mode .modal-box button {
         const statusText = document.getElementById('statusText');
 
         if (!isRecording) {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
                 alert('بڕاوزەرەکەت پشتگیری تۆمارکردنی ڤۆیس ناکات.');
                 return;
             }
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
+                const mimeType = getSupportedAudioMimeType();
+                mediaRecorder = mimeType
+                    ? new MediaRecorder(stream, { mimeType })
+                    : new MediaRecorder(stream);
+
+          audioChunks = [];
 
                 mediaRecorder.ondataavailable = function(event) {
-                    if (event.data.size > 0) {
+                    if (event.data && event.data.size > 0) {
                         audioChunks.push(event.data);
                     }
                 };
 
                 mediaRecorder.onstop = function() {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+
+                    if (!audioChunks.length) {
+                        alert('هیچ دەنگێک تۆمار نەکرا.');
+                        return;
+                    }
+
+                    const blobType = mediaRecorder.mimeType || mimeType || 'audio/webm';
+                    const audioBlob = new Blob(audioChunks, { type: blobType });
                     const reader = new FileReader();
                     reader.onloadend = function() {
-                        pushMessageToCloud({
-                            sender: currentUser,
-                            text: '',
-                            image: null,
-                            audio: reader.result,
-                            time: getCurrentTime()
-                        });
+                        if (reader.result) {
+                            pushMessageToCloud({
+                                sender: currentUser,
+                                text: '',
+                                image: null,
+                                audio: reader.result,
+                                time: getCurrentTime()
+                            });
+                        }
                     };
                     reader.readAsDataURL(audioBlob);
-
-                    // داخستنی مایکرۆفۆن دوای تەواوبوون
-                    stream.getTracks().forEach(track => track.stop());
                 };
 
                 mediaRecorder.start();
@@ -1275,7 +1371,7 @@ body.dark-mode .modal-box button {
     }
 
     function saveAndRender() {
-        localStorage.setItem('chat_single_messages', JSON.stringify(messages));
+        safeStorageSet('chat_single_messages', JSON.stringify(messages));
         rebuildMembersList(latestCloudMembers);
         renderMessages();
     }
@@ -1287,23 +1383,6 @@ body.dark-mode .modal-box button {
     }
 
     init();
-    applyTheme(localStorage.getItem('chat_theme') || 'light');
-    
-    function applyTheme(theme) {
-    const isDark = theme === 'dark';
-    document.body.classList.toggle('dark-mode', isDark);
-    const btn = document.getElementById('themeBtn');
-    if (btn) {
-        btn.innerText = isDark ? '☀️' : '🌙';
-    }
-    localStorage.setItem('chat_theme', isDark ? 'dark' : 'light');
-}
-
-function toggleTheme() {
-    const current = localStorage.getItem('chat_theme') || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-}
-    
 </script>
 
 </body>
