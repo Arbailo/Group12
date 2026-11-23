@@ -239,12 +239,18 @@
         }
 
         .message {
-            max-width: 75%;
+            max-width: 78%;
             padding: 10px 14px;
             border-radius: 10px;
             position: relative;
             word-wrap: break-word;
             box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .message.highlight-msg {
+            box-shadow: 0 0 0 3px #128c7e;
+            transform: scale(1.01);
         }
 
         .message.sent {
@@ -263,7 +269,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 4px;
         }
 
@@ -273,20 +279,58 @@
             color: #075e54;
         }
 
-        .delete-btn {
+        .message-actions-inline {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .action-icon-btn {
             background: transparent;
             border: none;
-            color: #999;
+            color: #777;
             cursor: pointer;
             font-size: 13px;
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 2px 5px;
+            border-radius: 5px;
+            line-height: 1;
             transition: color 0.15s, background-color 0.15s;
+        }
+
+        .action-icon-btn:hover {
+            color: #075e54;
+            background-color: rgba(0, 0, 0, 0.06);
         }
 
         .delete-btn:hover {
             color: #d93025;
             background-color: rgba(217, 48, 37, 0.1);
+        }
+
+        /* باکسی ڕیپلەی ناو نامە */
+        .quoted-reply-box {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-right: 3px solid #128c7e;
+            border-radius: 6px;
+            padding: 6px 9px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .quoted-reply-sender {
+            font-weight: bold;
+            color: #075e54;
+            margin-bottom: 2px;
+            font-size: 11px;
+        }
+
+        .quoted-reply-text {
+            color: #444;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 260px;
         }
 
         .message img {
@@ -311,6 +355,109 @@
             display: block;
         }
 
+        /* ڕیاکشنەکانی سەر نامە */
+        .reactions-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .reaction-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            padding: 2px 7px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.12s, background-color 0.15s, border-color 0.15s;
+        }
+
+        .reaction-chip:hover {
+            transform: scale(1.06);
+        }
+
+        .reaction-chip.reacted-by-me {
+            background-color: #c8f2d0;
+            border-color: #128c7e;
+            font-weight: bold;
+        }
+
+        .reaction-count {
+            font-size: 11px;
+            color: #333;
+        }
+
+        /* پێڕستی هەڵبژاردنی ڕیاکشن */
+        .reaction-picker-popup {
+            display: none;
+            position: fixed;
+            bottom: 76px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(94vw, 410px);
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+            z-index: 300;
+        }
+
+        .reaction-picker-popup.show {
+            display: block;
+        }
+
+        .reaction-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #075e54;
+            padding: 0 4px 8px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reaction-picker-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #666;
+            padding: 0 4px;
+        }
+
+        .reaction-emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            max-height: 190px;
+            overflow-y: auto;
+        }
+
+        .reaction-emoji-option {
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            padding: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.15s, transform 0.12s;
+        }
+
+        .reaction-emoji-option:hover {
+            background-color: #f0f2f5;
+            transform: scale(1.18);
+        }
+
         .message-footer {
             display: flex;
             justify-content: flex-start;
@@ -320,6 +467,57 @@
         .timestamp {
             font-size: 10px;
             color: #777;
+        }
+
+        /* باکسی ڕیپلەی سەرەوەی شوێنی نووسین */
+        .reply-preview-bar {
+            display: none;
+            background-color: #f7f8fa;
+            border-top: 1px solid #e0e0e0;
+            border-right: 4px solid #128c7e;
+            padding: 8px 14px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .reply-preview-bar.show {
+            display: flex;
+        }
+
+        .reply-preview-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .reply-preview-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #075e54;
+            margin-bottom: 2px;
+        }
+
+        .reply-preview-snippet {
+            font-size: 12px;
+            color: #555;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cancel-reply-btn {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .cancel-reply-btn:hover {
+            background-color: rgba(0, 0, 0, 0.08);
+            color: #d93025;
         }
 
         /* بەشی ناردنی نامە، ڕەسم، و ڤۆیس */
@@ -600,6 +798,80 @@
             color: #53bdeb;
         }
 
+        body.dark-mode .action-icon-btn {
+            color: #9baab4;
+        }
+
+        body.dark-mode .action-icon-btn:hover {
+            color: #e9edef;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-mode .quoted-reply-box {
+            background-color: rgba(0, 0, 0, 0.22);
+            border-right-color: #00a884;
+        }
+
+        body.dark-mode .quoted-reply-sender {
+            color: #53bdeb;
+        }
+
+        body.dark-mode .quoted-reply-text {
+            color: #c5d1d8;
+        }
+
+        body.dark-mode .reaction-chip {
+            background-color: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.14);
+            color: #e9edef;
+        }
+
+        body.dark-mode .reaction-chip.reacted-by-me {
+            background-color: rgba(0, 168, 132, 0.28);
+            border-color: #00a884;
+        }
+
+        body.dark-mode .reaction-count {
+            color: #e9edef;
+        }
+
+        body.dark-mode .reaction-picker-popup {
+            background-color: #202c33;
+            border-color: #2a3942;
+            color: #e9edef;
+        }
+
+        body.dark-mode .reaction-picker-header {
+            color: #00a884;
+            border-bottom-color: #2a3942;
+        }
+
+        body.dark-mode .reaction-picker-close {
+            color: #aebac1;
+        }
+
+        body.dark-mode .reaction-emoji-option:hover {
+            background-color: #2a3942;
+        }
+
+        body.dark-mode .reply-preview-bar {
+            background-color: #182229;
+            border-top-color: #2a3942;
+            border-right-color: #00a884;
+        }
+
+        body.dark-mode .reply-preview-title {
+            color: #53bdeb;
+        }
+
+        body.dark-mode .reply-preview-snippet {
+            color: #aebac1;
+        }
+
+        body.dark-mode .cancel-reply-btn {
+            color: #aebac1;
+        }
+
         body.dark-mode .timestamp {
             color: #8696a0;
         }
@@ -710,6 +982,24 @@
 
     <div class="messages-container" id="messagesContainer"></div>
 
+    <!-- پێڕستی هەڵبژاردنی ڕیاکشن -->
+    <div class="reaction-picker-popup" id="reactionPickerPopup" onclick="event.stopPropagation()">
+        <div class="reaction-picker-header">
+            <span>ڕیاکشن هەڵبژێرە بۆ نامەکە</span>
+            <button type="button" class="reaction-picker-close" onclick="closeReactionPicker()" title="داخستن">×</button>
+        </div>
+        <div class="reaction-emoji-grid" id="reactionEmojiGrid"></div>
+    </div>
+
+    <!-- باکسی پێشبینینی ڕیپلەی -->
+    <div class="reply-preview-bar" id="replyPreviewBar">
+        <div class="reply-preview-info">
+            <div class="reply-preview-title" id="replyPreviewSender"></div>
+            <div class="reply-preview-snippet" id="replyPreviewSnippet"></div>
+        </div>
+        <button type="button" class="cancel-reply-btn" onclick="cancelReply()" title="هەڵوەشاندنەوەی ڕیپلەی">×</button>
+    </div>
+
     <div class="input-area">
         <label for="imageInput" class="icon-btn" title="ناردنی ڕەسم">📷</label>
         <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="sendImage(event)">
@@ -745,11 +1035,17 @@
     const moderatorsRef = db.ref("group12_moderators");
     const bannedRef = db.ref("group12_banned");
 
+    const REACTION_EMOJIS = [
+        '🙂', '😁', '😂', '♥️', '🖕🏻', '🥰', '💔',
+        '👍🏻', '🤍', '🤣', '😭', '😘', '😍', '🥲',
+        '😏', '😋', '🤫', '🫡', '🤔', '😡', '🫀',
+        '💋', '👎🏻', '👏🏻', '🤲🏻', '🌹', '🌚'
+    ];
+
     function safeStorageSet(key, value) {
         try {
             localStorage.setItem(key, value);
         } catch (err) {
-            // ئەگەر localStorage پڕ بوو کۆنترین نامە ناوخۆییەکان کەم دەکەینەوە تا کێشە دروست نەبێت
             if (key === 'chat_single_messages' && Array.isArray(messages) && messages.length > 15) {
                 try {
                     messages = messages.slice(-15);
@@ -766,6 +1062,10 @@
     let moderatorsList = [];
     let bannedList = [];
 
+    // دۆخی ڕیپلەی و ڕیاکشنی هەڵبژێردراو
+    let activeReplyTo = null;
+    let activeReactionMsgId = null;
+
     // داتای تۆمارکردنی ڤۆیس
     let mediaRecorder = null;
     let audioChunks = [];
@@ -773,6 +1073,10 @@
 
     function getSafeKey(name) {
         return encodeURIComponent(String(name).trim()).replace(/\./g, '%2E');
+    }
+
+    function getReactionKey(emoji) {
+        return encodeURIComponent(String(emoji)).replace(/\./g, '%2E');
     }
 
     function isMainAdmin(name) {
@@ -955,6 +1259,8 @@
         localStorage.removeItem('chat_single_user');
         document.getElementById('currentUserBadge').innerText = '';
         document.getElementById('membersDropdown').classList.remove('show');
+        cancelReply();
+        closeReactionPicker();
         renderMembersInfo();
         renderMessages();
         document.getElementById('nameModal').style.display = 'flex';
@@ -966,6 +1272,7 @@
         event.stopPropagation();
         const dropdown = document.getElementById('membersDropdown');
         dropdown.classList.toggle('show');
+        closeReactionPicker();
     }
 
     document.addEventListener('click', function() {
@@ -973,6 +1280,7 @@
         if (dropdown) {
             dropdown.classList.remove('show');
         }
+        closeReactionPicker();
     });
 
     function openImageViewer(src) {
@@ -994,8 +1302,203 @@
         if (event.key === 'Escape') {
             document.getElementById('imageViewer').classList.remove('show');
             document.getElementById('membersDropdown').classList.remove('show');
+            closeReactionPicker();
+            cancelReply();
         }
     });
+
+    // فەنکشنەکانی ڕیپلەی کردن
+    function getMessageSnippet(msg) {
+        if (!msg) return '';
+        if (msg.text && msg.text.trim()) return msg.text.trim();
+        if (msg.image) return '📷 وێنە';
+        if (msg.audio) return '🎤 ڤۆیس';
+        return 'نامە';
+    }
+
+    function startReplyToMessage(index) {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+        const msg = messages[index];
+        if (!msg) return;
+
+        activeReplyTo = {
+            id: msg.id || '',
+            sender: msg.sender || 'بەکارهێنەر',
+            text: getMessageSnippet(msg)
+        };
+
+        document.getElementById('replyPreviewSender').innerText = `وەڵامدانەوەی ${activeReplyTo.sender}`;
+        document.getElementById('replyPreviewSnippet').innerText = activeReplyTo.text;
+        document.getElementById('replyPreviewBar').classList.add('show');
+        document.getElementById('messageInput').focus();
+    }
+
+    function cancelReply() {
+        activeReplyTo = null;
+        const bar = document.getElementById('replyPreviewBar');
+        if (bar) {
+            bar.classList.remove('show');
+        }
+    }
+
+    function scrollToRepliedMessage(targetMsgId) {
+        if (!targetMsgId) return;
+        const targetEl = document.querySelector(`[data-msg-id="${CSS.escape(targetMsgId)}"]`);
+        if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetEl.classList.add('highlight-msg');
+            setTimeout(() => {
+                targetEl.classList.remove('highlight-msg');
+            }, 1300);
+        }
+    }
+
+    // فەنکشنەکانی ڕیاکشن دانان
+    function buildReactionPickerEmojis() {
+        const grid = document.getElementById('reactionEmojiGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        REACTION_EMOJIS.forEach(emoji => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'reaction-emoji-option';
+            btn.innerText = emoji;
+            btn.title = emoji;
+            btn.onclick = function(e) {
+                e.stopPropagation();
+                selectReactionEmoji(emoji);
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    function openReactionPicker(event, msgId) {
+        event.stopPropagation();
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+        if (!msgId) return;
+
+        const popup = document.getElementById('reactionPickerPopup');
+        if (activeReactionMsgId === msgId && popup.classList.contains('show')) {
+            closeReactionPicker();
+            return;
+        }
+
+        activeReactionMsgId = msgId;
+        popup.classList.add('show');
+    }
+
+    function closeReactionPicker() {
+        activeReactionMsgId = null;
+        const popup = document.getElementById('reactionPickerPopup');
+        if (popup) {
+            popup.classList.remove('show');
+        }
+    }
+
+    function normalizeReactionsData(rawReactions) {
+        // شێوازی داتابەیس: { [emojiKey]: { emoji: '😂', users: { [userKey]: 'ناو' } } }
+        const normalized = {};
+        if (!rawReactions || typeof rawReactions !== 'object') {
+            return normalized;
+        }
+
+        Object.entries(rawReactions).forEach(([key, val]) => {
+            if (!val || typeof val !== 'object') return;
+            const emojiChar = val.emoji || decodeURIComponent(key.replace(/%2E/g, '.'));
+            const usersObj = (val.users && typeof val.users === 'object') ? val.users : {};
+            const cleanUsers = {};
+            Object.entries(usersObj).forEach(([uKey, uName]) => {
+                if (uName) cleanUsers[uKey] = uName;
+            });
+            if (Object.keys(cleanUsers).length > 0) {
+                normalized[emojiChar] = {
+                    emoji: emojiChar,
+                    users: cleanUsers
+                };
+            }
+        });
+        return normalized;
+    }
+
+    function applyReactionLocally(msgId, emoji, userName, removeOnly = false) {
+        const msgIndex = messages.findIndex(m => m.id === msgId);
+        if (msgIndex === -1) return;
+
+        const msg = messages[msgIndex];
+        const currentReactions = normalizeReactionsData(msg.reactions);
+        const userKey = getSafeKey(userName);
+
+        if (!currentReactions[emoji]) {
+            if (removeOnly) return;
+            currentReactions[emoji] = { emoji, users: { [userKey]: userName } };
+        } else {
+            const alreadyReacted = Boolean(currentReactions[emoji].users[userKey]);
+            if (alreadyReacted) {
+                delete currentReactions[emoji].users[userKey];
+                if (Object.keys(currentReactions[emoji].users).length === 0) {
+                    delete currentReactions[emoji];
+                }
+            } else if (!removeOnly) {
+                currentReactions[emoji].users[userKey] = userName;
+            }
+        }
+
+        msg.reactions = currentReactions;
+        safeStorageSet('chat_single_messages', JSON.stringify(messages));
+        renderMessages();
+    }
+
+    function selectReactionEmoji(emoji) {
+        if (!currentUser || !activeReactionMsgId) return;
+        const targetMsgId = activeReactionMsgId;
+        const userKey = getSafeKey(currentUser);
+        const emojiKey = getReactionKey(emoji);
+
+        closeReactionPicker();
+        applyReactionLocally(targetMsgId, emoji, currentUser, false);
+
+        const userRef = messagesRef.child(targetMsgId).child('reactions').child(emojiKey).child('users').child(userKey);
+        const emojiMetaRef = messagesRef.child(targetMsgId).child('reactions').child(emojiKey).child('emoji');
+
+        userRef.once('value', (snap) => {
+            if (snap.exists()) {
+                userRef.remove();
+            } else {
+                emojiMetaRef.set(emoji);
+                userRef.set(currentUser);
+            }
+        });
+    }
+
+    function toggleExistingReaction(event, msgId, emoji) {
+        event.stopPropagation();
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+        const userKey = getSafeKey(currentUser);
+        const emojiKey = getReactionKey(emoji);
+
+        applyReactionLocally(msgId, emoji, currentUser, false);
+
+        const userRef = messagesRef.child(msgId).child('reactions').child(emojiKey).child('users').child(userKey);
+        const emojiMetaRef = messagesRef.child(msgId).child('reactions').child(emojiKey).child('emoji');
+
+        userRef.once('value', (snap) => {
+            if (snap.exists()) {
+                userRef.remove();
+            } else {
+                emojiMetaRef.set(emoji);
+                userRef.set(currentUser);
+            }
+        });
+    }
 
     let latestCloudMembers = [];
 
@@ -1038,18 +1541,38 @@
             if (!data) return;
 
             const msgId = snapshot.key;
-            const exists = messages.some(m => m.id === msgId);
-            if (!exists) {
-                messages.push({
-                    id: msgId,
-                    sender: data.sender || '',
-                    text: data.text || '',
-                    image: data.image || null,
-                    audio: data.audio || null,
-                    time: data.time || ''
-                });
+            const existingIndex = messages.findIndex(m => m.id === msgId);
+            const parsedMsg = {
+                id: msgId,
+                sender: data.sender || '',
+                text: data.text || '',
+                image: data.image || null,
+                audio: data.audio || null,
+                time: data.time || '',
+                replyTo: data.replyTo || null,
+                reactions: normalizeReactionsData(data.reactions)
+            };
+
+            if (existingIndex === -1) {
+                messages.push(parsedMsg);
+            } else {
+                messages[existingIndex] = parsedMsg;
+            }
+
+            safeStorageSet('chat_single_messages', JSON.stringify(messages));
+            rebuildMembersList(latestCloudMembers);
+            renderMessages();
+        });
+
+        messagesRef.on('child_changed', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            const msgId = snapshot.key;
+            const existingIndex = messages.findIndex(m => m.id === msgId);
+            if (existingIndex !== -1) {
+                messages[existingIndex].reactions = normalizeReactionsData(data.reactions);
+                messages[existingIndex].replyTo = data.replyTo || null;
                 safeStorageSet('chat_single_messages', JSON.stringify(messages));
-                rebuildMembersList(latestCloudMembers);
                 renderMessages();
             }
         });
@@ -1081,6 +1604,7 @@
     }
 
     function init() {
+        buildReactionPickerEmojis();
         applyTheme(localStorage.getItem('chat_theme') || 'light');
         if (!currentUser) {
             document.getElementById('nameModal').style.display = 'flex';
@@ -1126,25 +1650,73 @@
         return now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
     }
 
+    function renderReactionsHtml(msg) {
+        const normalized = normalizeReactionsData(msg.reactions);
+        const entries = Object.values(normalized);
+        if (!entries.length || !msg.id) return '';
+
+        const myKey = currentUser ? getSafeKey(currentUser) : '';
+        const chipsHtml = entries.map(item => {
+            const usersList = Object.values(item.users || {});
+            const count = usersList.length;
+            if (!count) return '';
+            const iReacted = Boolean(myKey && item.users[myKey]);
+            const tooltipText = usersList.join('، ');
+            return `
+                <button type="button"
+                    class="reaction-chip ${iReacted ? 'reacted-by-me' : ''}"
+                    onclick="toggleExistingReaction(event, '${escapeJs(msg.id)}', '${escapeJs(item.emoji)}')"
+                    title="${escapeHtml(tooltipText)}">
+                    <span>${escapeHtml(item.emoji)}</span>
+                    <span class="reaction-count">${count}</span>
+                </button>
+            `;
+        }).filter(Boolean).join('');
+
+        return chipsHtml ? `<div class="reactions-bar">${chipsHtml}</div>` : '';
+    }
+
     function renderMessages() {
         const container = document.getElementById('messagesContainer');
         container.innerHTML = '';
 
         messages.forEach((msg, index) => {
             const div = document.createElement('div');
+            if (msg.id) {
+                div.setAttribute('data-msg-id', msg.id);
+            }
             const isMe = msg.sender === currentUser;
             const canDelete = isMe || canKickMembers(currentUser);
             div.className = `message ${isMe ? 'sent' : 'received'}`;
 
-            const deleteBtnHtml = canDelete
-                ? `<button class="delete-btn" onclick="deleteMessage(${index})" title="سڕینەوە">🗑️</button>`
+            const replyBtnHtml = `<button type="button" class="action-icon-btn" onclick="startReplyToMessage(${index})" title="ڕیپلەی کردن">↩️</button>`;
+            const reactBtnHtml = msg.id
+                ? `<button type="button" class="action-icon-btn" onclick="openReactionPicker(event, '${escapeJs(msg.id)}')" title="ڕیاکشن دانان">➕</button>`
                 : '';
+            const deleteBtnHtml = canDelete
+                ? `<button type="button" class="action-icon-btn delete-btn" onclick="deleteMessage(${index})" title="سڕینەوە">🗑️</button>`
+                : '';
+
+            let quotedHtml = '';
+            if (msg.replyTo && (msg.replyTo.sender || msg.replyTo.text)) {
+                quotedHtml = `
+                    <div class="quoted-reply-box" onclick="scrollToRepliedMessage('${escapeJs(msg.replyTo.id || '')}')" title="بڕۆ بۆ نامە ڕیپلەکراوەکە">
+                        <div class="quoted-reply-sender">${escapeHtml(msg.replyTo.sender || 'بەکارهێنەر')}</div>
+                        <div class="quoted-reply-text">${escapeHtml(msg.replyTo.text || '')}</div>
+                    </div>
+                `;
+            }
 
             let content = `
                 <div class="message-top">
                     <span class="sender-name">${escapeHtml(msg.sender)}</span>
-                    ${deleteBtnHtml}
+                    <div class="message-actions-inline">
+                        ${replyBtnHtml}
+                        ${reactBtnHtml}
+                        ${deleteBtnHtml}
+                    </div>
                 </div>
+                ${quotedHtml}
             `;
 
             if (msg.text) {
@@ -1156,6 +1728,8 @@
             if (msg.audio) {
                 content += `<audio controls playsinline src="${msg.audio}"></audio>`;
             }
+
+            content += renderReactionsHtml(msg);
 
             content += `
                 <div class="message-footer">
@@ -1192,6 +1766,8 @@
             image: payload.image || null,
             audio: payload.audio || null,
             time: payload.time || getCurrentTime(),
+            replyTo: payload.replyTo || null,
+            reactions: {},
             createdAt: firebase.database.ServerValue.TIMESTAMP
         };
 
@@ -1211,14 +1787,17 @@
         const input = document.getElementById('messageInput');
         const text = input.value.trim();
         if (text) {
+            const replySnapshot = activeReplyTo ? { ...activeReplyTo } : null;
             pushMessageToCloud({
                 sender: currentUser,
                 text: text,
                 image: null,
                 audio: null,
-                time: getCurrentTime()
+                time: getCurrentTime(),
+                replyTo: replySnapshot
             });
             input.value = '';
+            cancelReply();
         }
     }
 
@@ -1259,6 +1838,7 @@
 
         const statusText = document.getElementById('statusText');
         const prevStatus = statusText.innerText;
+        const replySnapshot = activeReplyTo ? { ...activeReplyTo } : null;
 
         try {
             statusText.innerText = 'خەریکی ئامادەکردن و ناردنی وێنەیە...';
@@ -1268,8 +1848,10 @@
                 text: '',
                 image: compressedBase64,
                 audio: null,
-                time: getCurrentTime()
+                time: getCurrentTime(),
+                replyTo: replySnapshot
             });
+            cancelReply();
         } catch (err) {
             alert('نەتوانرا وێنەکە بنێردرێت؛ تکایە وێنەیەکی تر تاقیبکەرەوە.');
         } finally {
@@ -1318,7 +1900,7 @@
                     ? new MediaRecorder(stream, { mimeType })
                     : new MediaRecorder(stream);
 
-          audioChunks = [];
+                audioChunks = [];
 
                 mediaRecorder.ondataavailable = function(event) {
                     if (event.data && event.data.size > 0) {
@@ -1336,6 +1918,7 @@
 
                     const blobType = mediaRecorder.mimeType || mimeType || 'audio/webm';
                     const audioBlob = new Blob(audioChunks, { type: blobType });
+                    const replySnapshot = activeReplyTo ? { ...activeReplyTo } : null;
                     const reader = new FileReader();
                     reader.onloadend = function() {
                         if (reader.result) {
@@ -1344,8 +1927,10 @@
                                 text: '',
                                 image: null,
                                 audio: reader.result,
-                                time: getCurrentTime()
+                                time: getCurrentTime(),
+                                replyTo: replySnapshot
                             });
+                            cancelReply();
                         }
                     };
                     reader.readAsDataURL(audioBlob);
