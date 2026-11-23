@@ -246,6 +246,7 @@
             word-wrap: break-word;
             box-shadow: 0 1px 2px rgba(0,0,0,0.12);
             transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
         }
 
         .message.highlight-msg {
@@ -282,7 +283,7 @@
         .message-actions-inline {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
         }
 
         .action-icon-btn {
@@ -294,7 +295,7 @@
             padding: 2px 5px;
             border-radius: 5px;
             line-height: 1;
-            transition: color 0.15s, background-color 0.15s;
+            transition: color 0.15s, background-color 0.15s, opacity 0.15s;
         }
 
         .action-icon-btn:hover {
@@ -302,9 +303,24 @@
             background-color: rgba(0, 0, 0, 0.06);
         }
 
-        .delete-btn:hover {
+        .delete-btn {
+            display: none;
             color: #d93025;
             background-color: rgba(217, 48, 37, 0.1);
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .message.show-delete .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-btn:hover {
+            color: #ffffff;
+            background-color: #d93025;
         }
 
         /* باکسی ڕیپلەی ناو نامە */
@@ -877,12 +893,13 @@
         }
 
         body.dark-mode .delete-btn {
-            color: #8696a0;
+            color: #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.14);
         }
 
         body.dark-mode .delete-btn:hover {
-            color: #ff6b6b;
-            background-color: rgba(255, 107, 107, 0.12);
+            color: #ffffff;
+            background-color: #d93025;
         }
 
         body.dark-mode .input-area {
@@ -1062,9 +1079,10 @@
     let moderatorsList = [];
     let bannedList = [];
 
-    // دۆخی ڕیپلەی و ڕیاکشنی هەڵبژێردراو
+    // دۆخی ڕیپلەی، ڕیاکشن، و دوگمەی سڕینەوەی هەڵبژێردراو
     let activeReplyTo = null;
     let activeReactionMsgId = null;
+    let selectedDeleteIndex = null;
 
     // داتای تۆمارکردنی ڤۆیس
     let mediaRecorder = null;
@@ -1259,6 +1277,7 @@
         localStorage.removeItem('chat_single_user');
         document.getElementById('currentUserBadge').innerText = '';
         document.getElementById('membersDropdown').classList.remove('show');
+        selectedDeleteIndex = null;
         cancelReply();
         closeReactionPicker();
         renderMembersInfo();
@@ -1281,6 +1300,10 @@
             dropdown.classList.remove('show');
         }
         closeReactionPicker();
+        if (selectedDeleteIndex !== null) {
+            selectedDeleteIndex = null;
+            renderMessages(true);
+        }
     });
 
     function openImageViewer(src) {
@@ -1304,10 +1327,14 @@
             document.getElementById('membersDropdown').classList.remove('show');
             closeReactionPicker();
             cancelReply();
+            if (selectedDeleteIndex !== null) {
+                selectedDeleteIndex = null;
+                renderMessages(true);
+            }
         }
     });
 
-    // فەنکشنەکانی ڕیپلەی کردن
+    // فەنکشنەکانی ڕیپلەی کردن و یەک پەنجە بۆ دێلیت
     function getMessageSnippet(msg) {
         if (!msg) return '';
         if (msg.text && msg.text.trim()) return msg.text.trim();
@@ -1356,6 +1383,32 @@
         }
     }
 
+    function handleSingleTapMessage(event, index, canDelete) {
+        event.stopPropagation();
+        if (!canDelete) return;
+
+        // ئەگەر کلیک لەسەر دوگمە، وێنە، دەنگ، ڕیاکشن یان باکسی ڕیپلە بوو با لێرە تێک نەدرێت
+        if (event.target.closest('button, img, audio, .reaction-chip, .quoted-reply-box')) {
+            return;
+        }
+
+        if (selectedDeleteIndex === index) {
+            selectedDeleteIndex = null;
+        } else {
+            selectedDeleteIndex = index;
+        }
+        renderMessages(true);
+    }
+
+    function handleDoubleTapMessage(event, index) {
+        event.stopPropagation();
+        if (event.target.closest('button, audio, .reaction-chip, .quoted-reply-box')) {
+            return;
+        }
+        selectedDeleteIndex = null;
+        startReplyToMessage(index);
+    }
+
     // فەنکشنەکانی ڕیاکشن دانان
     function buildReactionPickerEmojis() {
         const grid = document.getElementById('reactionEmojiGrid');
@@ -1402,7 +1455,6 @@
     }
 
     function normalizeReactionsData(rawReactions) {
-        // شێوازی داتابەیس: { [emojiKey]: { emoji: '😂', users: { [userKey]: 'ناو' } } }
         const normalized = {};
         if (!rawReactions || typeof rawReactions !== 'object') {
             return normalized;
@@ -1451,7 +1503,7 @@
 
         msg.reactions = currentReactions;
         safeStorageSet('chat_single_messages', JSON.stringify(messages));
-        renderMessages();
+        renderMessages(true);
     }
 
     function selectReactionEmoji(emoji) {
@@ -1573,7 +1625,7 @@
                 messages[existingIndex].reactions = normalizeReactionsData(data.reactions);
                 messages[existingIndex].replyTo = data.replyTo || null;
                 safeStorageSet('chat_single_messages', JSON.stringify(messages));
-                renderMessages();
+                renderMessages(true);
             }
         });
 
@@ -1582,8 +1634,9 @@
             const prevLen = messages.length;
             messages = messages.filter(m => m.id !== removedId);
             if (messages.length !== prevLen) {
+                selectedDeleteIndex = null;
                 safeStorageSet('chat_single_messages', JSON.stringify(messages));
-                renderMessages();
+                renderMessages(true);
             }
         });
     }
@@ -1676,8 +1729,9 @@
         return chipsHtml ? `<div class="reactions-bar">${chipsHtml}</div>` : '';
     }
 
-    function renderMessages() {
+    function renderMessages(preserveScroll = false) {
         const container = document.getElementById('messagesContainer');
+        const prevScrollTop = container.scrollTop;
         container.innerHTML = '';
 
         messages.forEach((msg, index) => {
@@ -1687,14 +1741,32 @@
             }
             const isMe = msg.sender === currentUser;
             const canDelete = isMe || canKickMembers(currentUser);
-            div.className = `message ${isMe ? 'sent' : 'received'}`;
+            const showDelete = canDelete && selectedDeleteIndex === index;
 
-            const replyBtnHtml = `<button type="button" class="action-icon-btn" onclick="startReplyToMessage(${index})" title="ڕیپلەی کردن">↩️</button>`;
+            div.className = `message ${isMe ? 'sent' : 'received'}${showDelete ? ' show-delete' : ''}`;
+            div.onclick = (e) => handleSingleTapMessage(e, index, canDelete);
+            div.ondblclick = (e) => handleDoubleTapMessage(e, index);
+
+            // پشتگیری دوو پەنجە بۆ مۆبایلەکان (Double Tap on touch)
+            let lastTouchTime = 0;
+            div.addEventListener('touchend', function(e) {
+                if (e.target.closest('button, audio, .reaction-chip, .quoted-reply-box')) return;
+                const now = Date.now();
+                if (now - lastTouchTime < 320 && now - lastTouchTime > 0) {
+                    e.preventDefault();
+                    lastTouchTime = 0;
+                    selectedDeleteIndex = null;
+                    startReplyToMessage(index);
+                } else {
+                    lastTouchTime = now;
+                }
+            }, { passive: false });
+
             const reactBtnHtml = msg.id
                 ? `<button type="button" class="action-icon-btn" onclick="openReactionPicker(event, '${escapeJs(msg.id)}')" title="ڕیاکشن دانان">➕</button>`
                 : '';
             const deleteBtnHtml = canDelete
-                ? `<button type="button" class="action-icon-btn delete-btn" onclick="deleteMessage(${index})" title="سڕینەوە">🗑️</button>`
+                ? `<button type="button" class="action-icon-btn delete-btn" onclick="deleteMessage(event, ${index})" title="سڕینەوە">🗑️</button>`
                 : '';
 
             let quotedHtml = '';
@@ -1711,7 +1783,6 @@
                 <div class="message-top">
                     <span class="sender-name">${escapeHtml(msg.sender)}</span>
                     <div class="message-actions-inline">
-                        ${replyBtnHtml}
                         ${reactBtnHtml}
                         ${deleteBtnHtml}
                     </div>
@@ -1741,10 +1812,17 @@
             container.appendChild(div);
         });
 
-        container.scrollTop = container.scrollHeight;
+        if (preserveScroll) {
+            container.scrollTop = prevScrollTop;
+        } else {
+            container.scrollTop = container.scrollHeight;
+        }
     }
 
-    function deleteMessage(index) {
+    function deleteMessage(event, index) {
+        if (event && event.stopPropagation) {
+            event.stopPropagation();
+        }
         if (index < 0 || index >= messages.length) return;
         if (confirm('دڵنیایت دەتەوێت ئەمە بسڕیتەوە؟')) {
             const targetMsg = messages[index];
@@ -1752,6 +1830,7 @@
                 messagesRef.child(targetMsg.id).remove();
             }
             messages.splice(index, 1);
+            selectedDeleteIndex = null;
             saveAndRender();
         }
     }
@@ -1958,7 +2037,7 @@
     function saveAndRender() {
         safeStorageSet('chat_single_messages', JSON.stringify(messages));
         rebuildMembersList(latestCloudMembers);
-        renderMessages();
+        renderMessages(true);
     }
 
     function handleMessageKeyPress(event) {
