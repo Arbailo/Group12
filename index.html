@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بەرنامەی چاتی گروپی</title>
+    <title>بەرنامەی چاتی گروپی و شەخسی</title>
     <style>
         * {
             box-sizing: border-box;
@@ -44,7 +44,7 @@
         .chat-header {
             background-color: #075e54;
             color: white;
-            padding: 14px 18px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,41 +54,59 @@
             gap: 8px;
         }
 
+        .header-title-wrap {
+            min-width: 0;
+        }
+
         .chat-header h3 {
-            font-size: 18px;
+            font-size: 17px;
             margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-header small {
-            font-size: 12px;
+            font-size: 11px;
             color: #d9f2ee;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 6px;
             flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
-        .members-btn, .leave-btn {
+        .members-btn, .leave-btn, .switch-mode-btn {
             background-color: #128c7e;
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 6px 11px;
+            padding: 6px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.2s;
+            white-space: nowrap;
         }
 
-        .members-btn:hover {
+        .members-btn:hover, .switch-mode-btn:hover {
             background-color: #1aa393;
         }
 
+        .switch-mode-btn.dm-active {
+            background-color: #2563eb;
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
         .leave-btn {
-            background-color: rgba(217, 48, 37, 0.85);
+            background-color: rgba(217, 48, 37, 0.88);
             border-color: rgba(255, 255, 255, 0.2);
         }
 
@@ -98,23 +116,27 @@
 
         .user-badge {
             background-color: rgba(255, 255, 255, 0.15);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
+            max-width: 110px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* لیستی ئەندامان */
+        /* لیستی ئەندامان و چاتە شەخسییەکان */
         .members-dropdown {
             display: none;
             position: absolute;
-            top: 66px;
-            left: 18px;
-            width: 295px;
+            top: 64px;
+            left: 16px;
+            width: min(92vw, 330px);
             background-color: #ffffff;
             color: #222;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
             padding: 14px;
             z-index: 50;
             border: 1px solid #e0e0e0;
@@ -133,12 +155,46 @@
             border-bottom: 1px solid #eee;
             font-weight: bold;
             color: #075e54;
-            font-size: 14px;
+            font-size: 13.5px;
+        }
+
+        .dm-quick-section {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .dm-section-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .dm-recent-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .dm-recent-chip {
+            background-color: #e6f4f1;
+            color: #075e54;
+            border: 1px solid #b2dfd6;
+            border-radius: 14px;
+            padding: 3px 9px;
+            font-size: 11.5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .dm-recent-chip:hover {
+            background-color: #ccebe4;
         }
 
         .members-dropdown ul {
             list-style: none;
-            max-height: 240px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
@@ -148,7 +204,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
+            gap: 6px;
             border-bottom: 1px solid #f7f7f7;
         }
 
@@ -159,8 +215,15 @@
         .member-info {
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 6px;
             min-width: 0;
+        }
+
+        .member-name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 110px;
         }
 
         .member-dot {
@@ -192,17 +255,26 @@
         .member-actions {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             flex-shrink: 0;
         }
 
-        .mod-btn, .kick-btn {
+        .dm-btn, .mod-btn, .kick-btn {
             border: none;
             border-radius: 6px;
             padding: 3px 7px;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .dm-btn {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .dm-btn:hover {
+            background-color: #bfdbfe;
         }
 
         .mod-btn {
@@ -236,6 +308,16 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+
+        .empty-chat-hint {
+            text-align: center;
+            color: #64748b;
+            font-size: 13.5px;
+            margin: auto;
+            padding: 18px;
+            background-color: rgba(255, 255, 255, 0.65);
+            border-radius: 12px;
         }
 
         .message {
@@ -603,11 +685,11 @@
             opacity: 0.92;
         }
 
-        /* مۆداڵی دانانی ناو بۆ یەکەمجار */
+        /* مۆداڵی چوونە ناو ئەکاونت و دروستکردنی ئەکاونت */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.65);
+            background-color: rgba(0, 0, 0, 0.68);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -618,40 +700,64 @@
         .modal-box {
             background-color: #ffffff;
             width: 100%;
-            max-width: 380px;
+            max-width: 390px;
             padding: 24px;
             border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
             text-align: center;
         }
 
         .modal-box h2 {
             color: #075e54;
             font-size: 20px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .modal-box p {
             color: #555;
-            font-size: 14px;
-            margin-bottom: 18px;
+            font-size: 13.5px;
+            margin-bottom: 16px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: #f1f5f9;
+            color: #334155;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .auth-tab-btn.active {
+            background-color: #075e54;
+            color: #ffffff;
+            border-color: #075e54;
         }
 
         .modal-box input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 11px 14px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14.5px;
             outline: none;
-            margin-bottom: 14px;
+            margin-bottom: 11px;
         }
 
         .modal-box input:focus {
             border-color: #128c7e;
         }
 
-        .modal-box button {
+        .modal-box button.primary-auth-btn {
             width: 100%;
             padding: 12px;
             background-color: #075e54;
@@ -661,9 +767,10 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 2px;
         }
 
-        .modal-box button:hover {
+        .modal-box button.primary-auth-btn:hover {
             background-color: #128c7e;
         }
 
@@ -752,13 +859,20 @@
             color: #8696a0;
         }
 
-        body.dark-mode .members-btn {
+        body.dark-mode .members-btn,
+        body.dark-mode .switch-mode-btn {
             background-color: #2a3942;
             border-color: rgba(255, 255, 255, 0.12);
         }
 
-        body.dark-mode .members-btn:hover {
+        body.dark-mode .members-btn:hover,
+        body.dark-mode .switch-mode-btn:hover {
             background-color: #374854;
+        }
+
+        body.dark-mode .switch-mode-btn.dm-active {
+            background-color: #1e40af;
+            color: #e0f2fe;
         }
 
         body.dark-mode .members-dropdown {
@@ -773,8 +887,27 @@
             border-bottom-color: #2a3942;
         }
 
+        body.dark-mode .dm-quick-section {
+            border-bottom-color: #2a3942;
+        }
+
+        body.dark-mode .dm-section-label {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .dm-recent-chip {
+            background-color: #183a34;
+            color: #34d399;
+            border-color: #235c50;
+        }
+
         body.dark-mode .members-dropdown li {
             border-bottom-color: #2a3942;
+        }
+
+        body.dark-mode .dm-btn {
+            background-color: #1e3a8a;
+            color: #93c5fd;
         }
 
         body.dark-mode .mod-btn {
@@ -798,6 +931,11 @@
 
         body.dark-mode .kick-btn:hover {
             background-color: #4d2428;
+        }
+
+        body.dark-mode .empty-chat-hint {
+            background-color: rgba(32, 44, 51, 0.8);
+            color: #94a3b8;
         }
 
         body.dark-mode .message.sent {
@@ -944,13 +1082,25 @@
             color: #aebac1;
         }
 
+        body.dark-mode .auth-tab-btn {
+            background-color: #2a3942;
+            color: #cbd5e1;
+            border-color: #374854;
+        }
+
+        body.dark-mode .auth-tab-btn.active {
+            background-color: #00a884;
+            color: #111b21;
+            border-color: #00a884;
+        }
+
         body.dark-mode .modal-box input {
             background-color: #2a3942;
             color: #e9edef;
             border-color: #374854;
         }
 
-        body.dark-mode .modal-box button {
+        body.dark-mode .primary-auth-btn {
             background-color: #00a884;
             color: #111b21;
         }
@@ -958,13 +1108,20 @@
 </head>
 <body>
 
-<!-- پەنجەرەی دانانی ناو کاتێک بەکارهێنەر دێتە ناوەوە -->
+<!-- پەنجەرەی ئەکاونت (چوونە ناوەوە / دروستکردنی ئەکاونت) -->
 <div class="modal-overlay" id="nameModal" style="display: none;">
     <div class="modal-box">
-        <h2>بەخێربێیت</h2>
-        <p>تکایە ناوی خۆت بنووسە بۆ چوونە ناو چاتەکە:</p>
-        <input type="text" id="usernameInput" placeholder="ناوەکەت بنووسە..." onkeypress="handleNameKeyPress(event)">
-        <button onclick="saveUsername()">چوونە ناو</button>
+        <h2 id="authModalTitle">چوونە ناو ئەکاونت</h2>
+        <p id="authModalSubtitle">ناوی بەکارهێنەر و پاسۆردی خۆت بنووسە بۆ چات و گروپ:</p>
+
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab-btn active" id="loginTabBtn" onclick="setAuthMode('login')">چوونە ناو</button>
+            <button type="button" class="auth-tab-btn" id="registerTabBtn" onclick="setAuthMode('register')">ئەکاونتی نوێ</button>
+        </div>
+
+        <input type="text" id="usernameInput" placeholder="ناوی بەکارهێنەر (Username)..." onkeypress="handleNameKeyPress(event)">
+        <input type="password" id="passwordInput" placeholder="پاسۆرد (Password)..." onkeypress="handleNameKeyPress(event)">
+        <button type="button" class="primary-auth-btn" id="authSubmitBtn" onclick="submitAccountAuth()">چوونە ناو</button>
     </div>
 </div>
 
@@ -976,22 +1133,27 @@
 
 <div class="app-container">
     <div class="chat-header">
-        <div>
-            <h3>چاتی گروپی</h3>
+        <div class="header-title-wrap">
+            <h3 id="chatTitleText">چاتی گروپی</h3>
             <small id="statusText">ناردنی نامە، وێنە و ڤۆیس</small>
         </div>
         <div class="header-actions">
+            <button type="button" class="switch-mode-btn" id="switchChatModeBtn" onclick="handleHeaderChatModeClick()">💬 شەخسی</button>
             <button type="button" class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="گۆڕینی دۆخی ڕوون و تاریک">🌙</button>
             <button type="button" class="members-btn" id="membersBtn" onclick="toggleMembersDropdown(event)">
                 ئەندامان (<span id="headerMemberCount">0</span>)
             </button>
-            <button type="button" class="leave-btn" id="leaveBtn" onclick="leaveGroup()" title="چوونە دەرەوە">چوونە دەرەوە</button>
+            <button type="button" class="leave-btn" id="leaveBtn" onclick="leaveGroup()" title="چوونە دەرەوە لە ئەکاونت">دەرچوون</button>
             <div class="user-badge" id="currentUserBadge"></div>
         </div>
 
         <div class="members-dropdown" id="membersDropdown" onclick="event.stopPropagation()">
             <div class="members-dropdown-header">
-                <span>ژمارەی ئەندامان: <span id="dropdownMemberCount">0</span></span>
+                <span>ئەندامان و چاتی شەخسی (<span id="dropdownMemberCount">0</span>)</span>
+            </div>
+            <div class="dm-quick-section" id="dmRecentSection" style="display: none;">
+                <div class="dm-section-label">چاتە شەخسییەکانت:</div>
+                <div class="dm-recent-list" id="dmRecentList"></div>
             </div>
             <ul id="membersDropdownList"></ul>
         </div>
@@ -1051,6 +1213,8 @@
     const adminsRef = db.ref("group12_admins");
     const moderatorsRef = db.ref("group12_moderators");
     const bannedRef = db.ref("group12_banned");
+    const usersRef = db.ref("group12_users");
+    const privateChatsRef = db.ref("group12_private_chats");
 
     const REACTION_EMOJIS = [
         '🙂', '😁', '😂', '♥️', '🖕🏻', '🥰', '💔',
@@ -1073,6 +1237,16 @@
     }
 
     let currentUser = localStorage.getItem('chat_single_user') || '';
+    let authMode = 'login'; // 'login' | 'register'
+    let registeredUsersMap = {};
+
+    // دۆخی چات: 'group' یان 'private'
+    let chatMode = 'group';
+    let activePrivatePartner = '';
+    let activePrivateMessagesRef = null;
+    let privateMessages = [];
+    let privatePartnersList = [];
+
     let messages = JSON.parse(localStorage.getItem('chat_single_messages')) || [];
     let members = JSON.parse(localStorage.getItem('chat_single_members')) || [];
     let adminsList = [];
@@ -1097,6 +1271,31 @@
         return encodeURIComponent(String(emoji)).replace(/\./g, '%2E');
     }
 
+    function getPrivateChatId(userA, userB) {
+        const pair = [String(userA).trim(), String(userB).trim()].sort((a, b) => a.localeCompare(b));
+        return `${getSafeKey(pair[0])}__${getSafeKey(pair[1])}`;
+    }
+
+    function getActiveMessagesRef() {
+        if (chatMode === 'private' && currentUser && activePrivatePartner) {
+            return privateChatsRef.child(getPrivateChatId(currentUser, activePrivatePartner)).child('messages');
+        }
+        return messagesRef;
+    }
+
+    function getCurrentDisplayedMessages() {
+        return chatMode === 'private' ? privateMessages : messages;
+    }
+
+    function hashPasswordSimple(pass) {
+        let hash = 2166136261;
+        for (let i = 0; i < pass.length; i++) {
+            hash ^= pass.charCodeAt(i);
+            hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0).toString(16);
+    }
+
     function isMainAdmin(name) {
         return Boolean(name) && adminsList.includes(name);
     }
@@ -1113,7 +1312,116 @@
         return Boolean(name) && bannedList.includes(name);
     }
 
+    function setAuthMode(mode) {
+        authMode = mode;
+        const loginBtn = document.getElementById('loginTabBtn');
+        const registerBtn = document.getElementById('registerTabBtn');
+        const titleEl = document.getElementById('authModalTitle');
+        const subEl = document.getElementById('authModalSubtitle');
+        const submitEl = document.getElementById('authSubmitBtn');
+
+        if (mode === 'register') {
+            loginBtn.classList.remove('active');
+            registerBtn.classList.add('active');
+            titleEl.innerText = 'دروستکردنی ئەکاونتی نوێ';
+            subEl.innerText = 'ناوێکی تایبەت و پاسۆردێک هەڵبژێرە بۆ ئەکاونتەکەت:';
+            submitEl.innerText = 'تۆمارکردن و چوونە ناو';
+        } else {
+            registerBtn.classList.remove('active');
+            loginBtn.classList.add('active');
+            titleEl.innerText = 'چوونە ناو ئەکاونت';
+            subEl.innerText = 'ناوی بەکارهێنەر و پاسۆردی خۆت بنووسە:';
+            submitEl.innerText = 'چوونە ناو';
+        }
+    }
+
+    function submitAccountAuth() {
+        const nameInput = document.getElementById('usernameInput');
+        const passInput = document.getElementById('passwordInput');
+        const name = nameInput.value.trim();
+        const password = passInput.value;
+
+        if (!name) {
+            alert('تکایە ناوی بەکارهێنەر بنووسە!');
+            nameInput.focus();
+            return;
+        }
+        if (!password || password.length < 3) {
+            alert('تکایە پاسۆردێک بنووسە (لانیکەم ٣ پیت/ژمارە).');
+            passInput.focus();
+            return;
+        }
+        if (isBanned(name)) {
+            alert('ئەم ناوە لە گرووپ دەرکراوە؛ ناوێکی تر بەکاربهێنە.');
+            return;
+        }
+
+        const userKey = getSafeKey(name);
+        const passHash = hashPasswordSimple(password);
+
+        usersRef.child(userKey).once('value', (snap) => {
+            const existing = snap.val();
+
+            if (authMode === 'register') {
+                if (existing && existing.passwordHash) {
+                    alert('ئەم ناوە پێشتر ئەکاونتی هەیە! لە بەشی "چوونە ناو" بە پاسۆردەکەت بچۆ ناوەوە.');
+                    setAuthMode('login');
+                    return;
+                }
+                usersRef.child(userKey).set({
+                    username: name,
+                    passwordHash: passHash,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                }).then(() => {
+                    completeLogin(name);
+                }).catch((err) => {
+                    alert('هەڵە لە دروستکردنی ئەکاونت: ' + err.message);
+                });
+            } else {
+                if (!existing || !existing.passwordHash) {
+                    // ئەگەر ناوەکە لە سیستەمی کۆندا بوو یان تازە بوو، ئەگەر پاسۆردی نەبوو دەتوانێت تۆماری بکات
+                    if (confirm('ئەم ناوە ئەکاونتی تۆمارکراوی نییە. دەتەوێت بەم ناو و پاسۆردە ئەکاونتێکی نوێ دروست بکەیت؟')) {
+                        usersRef.child(userKey).set({
+                            username: name,
+                            passwordHash: passHash,
+                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                        }).then(() => {
+                            completeLogin(name);
+                        });
+                    }
+                    return;
+                }
+
+                if (existing.passwordHash !== passHash) {
+                    alert('پاسۆردەکە هەڵەیە! تکایە دووبارە هەوڵ بدەرەوە.');
+                    passInput.value = '';
+                    passInput.focus();
+                    return;
+                }
+
+                completeLogin(existing.username || name);
+            }
+        });
+    }
+
+    function completeLogin(validName) {
+        currentUser = validName;
+        safeStorageSet('chat_single_user', currentUser);
+        document.getElementById('currentUserBadge').innerText = currentUser;
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('nameModal').style.display = 'none';
+        document.getElementById('messageInput').focus();
+        syncMembers();
+        loadRecentPrivateChats();
+        updateChatHeaderUI();
+        renderMessages();
+    }
+
     function rebuildMembersList(cloudMembers = []) {
+        const registeredNames = Object.values(registeredUsersMap)
+            .map(u => u && u.username)
+            .filter(name => Boolean(name) && !isBanned(name));
+
         const fromMessages = messages
             .map(m => m.sender)
             .filter(name => Boolean(name) && !isBanned(name));
@@ -1121,7 +1429,7 @@
         const activeCloud = cloudMembers.filter(name => Boolean(name) && !isBanned(name));
         const currentAllowed = currentUser && !isBanned(currentUser) ? [currentUser] : [];
 
-        members = [...new Set([...activeCloud, ...fromMessages, ...currentAllowed])];
+        members = [...new Set([...registeredNames, ...activeCloud, ...fromMessages, ...currentAllowed])];
         safeStorageSet('chat_single_members', JSON.stringify(members));
         renderMembersInfo();
     }
@@ -1148,6 +1456,192 @@
         }
 
         rebuildMembersList(members);
+    }
+
+    function loadRecentPrivateChats() {
+        if (!currentUser) {
+            privatePartnersList = [];
+            renderRecentPrivateChatsUI();
+            return;
+        }
+
+        privateChatsRef.once('value', (snap) => {
+            const val = snap.val() || {};
+            const myKey = getSafeKey(currentUser);
+            const partners = new Set();
+
+            Object.keys(val).forEach(chatRoomKey => {
+                const parts = chatRoomKey.split('__');
+                if (parts.length === 2) {
+                    if (parts[0] === myKey) {
+                        const otherName = decodeURIComponent(parts[1].replace(/%2E/g, '.'));
+                        if (otherName && otherName !== currentUser && !isBanned(otherName)) {
+                            partners.add(otherName);
+                        }
+                    } else if (parts[1] === myKey) {
+                        const otherName = decodeURIComponent(parts[0].replace(/%2E/g, '.'));
+                        if (otherName && otherName !== currentUser && !isBanned(otherName)) {
+                            partners.add(otherName);
+                        }
+                    }
+                }
+            });
+
+            privatePartnersList = [...partners];
+            renderRecentPrivateChatsUI();
+        });
+    }
+
+    function renderRecentPrivateChatsUI() {
+        const section = document.getElementById('dmRecentSection');
+        const container = document.getElementById('dmRecentList');
+        if (!section || !container) return;
+
+        if (!currentUser || privatePartnersList.length === 0) {
+            section.style.display = 'none';
+            container.innerHTML = '';
+            return;
+        }
+
+        section.style.display = 'block';
+        container.innerHTML = privatePartnersList.map(partnerName => `
+            <button type="button" class="dm-recent-chip" onclick="openPrivateChat('${escapeJs(partnerName)}')">
+                💬 ${escapeHtml(partnerName)}
+            </button>
+        `).join('');
+    }
+
+    function updateChatHeaderUI() {
+        const titleEl = document.getElementById('chatTitleText');
+        const statusEl = document.getElementById('statusText');
+        const modeBtn = document.getElementById('switchChatModeBtn');
+
+        if (chatMode === 'private' && activePrivatePartner) {
+            titleEl.innerText = `چاتی شەخسی: ${activePrivatePartner}`;
+            statusEl.innerText = 'نامەی تایبەت لە نێوان تۆ و ئەم ئەندامە';
+            modeBtn.innerText = '👥 گروپ';
+            modeBtn.classList.add('dm-active');
+        } else {
+            chatMode = 'group';
+            activePrivatePartner = '';
+            titleEl.innerText = 'چاتی گروپی';
+            statusEl.innerText = 'ناردنی نامە، وێنە و ڤۆیس';
+            modeBtn.innerText = '💬 شەخسی';
+            modeBtn.classList.remove('dm-active');
+        }
+    }
+
+    function handleHeaderChatModeClick() {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+
+        if (chatMode === 'private') {
+            switchToGroupChat();
+        } else {
+            // لیستی ئەندامان دەکاتەوە تا کەسێک بۆ چاتی شەخسی هەڵبژێریت
+            const dropdown = document.getElementById('membersDropdown');
+            dropdown.classList.add('show');
+        }
+    }
+
+    function switchToGroupChat() {
+        if (activePrivateMessagesRef) {
+            activePrivateMessagesRef.off();
+            activePrivateMessagesRef = null;
+        }
+        chatMode = 'group';
+        activePrivatePartner = '';
+        privateMessages = [];
+        selectedDeleteIndex = null;
+        cancelReply();
+        closeReactionPicker();
+        updateChatHeaderUI();
+        renderMessages();
+    }
+
+    function openPrivateChat(partnerName) {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            return;
+        }
+        if (!partnerName || partnerName === currentUser) return;
+
+        if (activePrivateMessagesRef) {
+            activePrivateMessagesRef.off();
+            activePrivateMessagesRef = null;
+        }
+
+        chatMode = 'private';
+        activePrivatePartner = partnerName;
+        privateMessages = [];
+        selectedDeleteIndex = null;
+        cancelReply();
+        closeReactionPicker();
+        document.getElementById('membersDropdown').classList.remove('show');
+        updateChatHeaderUI();
+        renderMessages();
+
+        const chatId = getPrivateChatId(currentUser, partnerName);
+        activePrivateMessagesRef = privateChatsRef.child(chatId).child('messages');
+
+        if (!privatePartnersList.includes(partnerName)) {
+            privatePartnersList.push(partnerName);
+            renderRecentPrivateChatsUI();
+        }
+
+        activePrivateMessagesRef.on('child_added', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const msgId = snapshot.key;
+            const existingIndex = privateMessages.findIndex(m => m.id === msgId);
+            const parsedMsg = {
+                id: msgId,
+                sender: data.sender || '',
+                text: data.text || '',
+                image: data.image || null,
+                audio: data.audio || null,
+                time: data.time || '',
+                replyTo: data.replyTo || null,
+                reactions: normalizeReactionsData(data.reactions)
+            };
+
+            if (existingIndex === -1) {
+                privateMessages.push(parsedMsg);
+            } else {
+                privateMessages[existingIndex] = parsedMsg;
+            }
+
+            if (chatMode === 'private' && activePrivatePartner === partnerName) {
+                renderMessages();
+            }
+        });
+
+        activePrivateMessagesRef.on('child_changed', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            const msgId = snapshot.key;
+            const existingIndex = privateMessages.findIndex(m => m.id === msgId);
+            if (existingIndex !== -1) {
+                privateMessages[existingIndex].reactions = normalizeReactionsData(data.reactions);
+                privateMessages[existingIndex].replyTo = data.replyTo || null;
+                if (chatMode === 'private' && activePrivatePartner === partnerName) {
+                    renderMessages(true);
+                }
+            }
+        });
+
+        activePrivateMessagesRef.on('child_removed', (snapshot) => {
+            const removedId = snapshot.key;
+            const prevLen = privateMessages.length;
+            privateMessages = privateMessages.filter(m => m.id !== removedId);
+            if (privateMessages.length !== prevLen && chatMode === 'private' && activePrivatePartner === partnerName) {
+                selectedDeleteIndex = null;
+                renderMessages(true);
+            }
+        });
     }
 
     function renderMembersInfo() {
@@ -1181,9 +1675,15 @@
             const targetIsMod = isModerator(name);
             const isSelf = name === currentUser;
 
+            if (!isSelf && currentUser) {
+                actionsHtml += `
+                    <button type="button" class="dm-btn" onclick="openPrivateChat('${escapeJs(name)}')" title="چاتی شەخسی">💬 چات</button>
+                `;
+            }
+
             if (iAmAdmin && !isSelf && !targetIsAdmin) {
                 actionsHtml += `
-                    <button class="mod-btn ${targetIsMod ? 'active-mod' : ''}" onclick="toggleModerator('${escapeJs(name)}')">
+                    <button type="button" class="mod-btn ${targetIsMod ? 'active-mod' : ''}" onclick="toggleModerator('${escapeJs(name)}')">
                         ${targetIsMod ? 'لابردنی مۆد' : 'کردنە مۆد'}
                     </button>
                 `;
@@ -1191,14 +1691,14 @@
 
             if (iCanKick && !isSelf && !targetIsAdmin && !(!iAmAdmin && targetIsMod)) {
                 actionsHtml += `
-                    <button class="kick-btn" onclick="kickMember('${escapeJs(name)}')" title="دەرکردن">دەرکردن</button>
+                    <button type="button" class="kick-btn" onclick="kickMember('${escapeJs(name)}')" title="دەرکردن">دەرکردن</button>
                 `;
             }
 
             li.innerHTML = `
                 <div class="member-info">
                     <span class="member-dot"></span>
-                    <span>${escapeHtml(name)}</span>
+                    <span class="member-name-text">${escapeHtml(name)}</span>
                     ${badgeHtml}
                 </div>
                 <div class="member-actions">${actionsHtml}</div>
@@ -1250,6 +1750,9 @@
             membersRef.child(key).remove();
             members = members.filter(m => m !== targetName);
             safeStorageSet('chat_single_members', JSON.stringify(members));
+            if (chatMode === 'private' && activePrivatePartner === targetName) {
+                switchToGroupChat();
+            }
             renderMembersInfo();
         }
     }
@@ -1260,7 +1763,7 @@
             return;
         }
 
-        if (!confirm('دڵنیایت دەتەوێت لە گرووپ بچیتە دەرەوە؟')) return;
+        if (!confirm('دڵنیایت دەتەوێت لە ئەکاونتەکەت بچیتە دەرەوە؟')) return;
 
         const leavingUser = currentUser;
         const key = getSafeKey(leavingUser);
@@ -1270,8 +1773,17 @@
             moderatorsRef.child(key).remove();
         }
 
-        members = members.filter(m => m !== leavingUser);
-        safeStorageSet('chat_single_members', JSON.stringify(members));
+        if (activePrivateMessagesRef) {
+            activePrivateMessagesRef.off();
+            activePrivateMessagesRef = null;
+        }
+
+        chatMode = 'group';
+        activePrivatePartner = '';
+        privateMessages = [];
+        privatePartnersList = [];
+        renderRecentPrivateChatsUI();
+        updateChatHeaderUI();
 
         currentUser = '';
         localStorage.removeItem('chat_single_user');
@@ -1280,10 +1792,12 @@
         selectedDeleteIndex = null;
         cancelReply();
         closeReactionPicker();
-        renderMembersInfo();
+        rebuildMembersList(latestCloudMembers);
         renderMessages();
+        setAuthMode('login');
         document.getElementById('nameModal').style.display = 'flex';
         document.getElementById('usernameInput').value = '';
+        document.getElementById('passwordInput').value = '';
         document.getElementById('usernameInput').focus();
     }
 
@@ -1348,7 +1862,8 @@
             document.getElementById('nameModal').style.display = 'flex';
             return;
         }
-        const msg = messages[index];
+        const list = getCurrentDisplayedMessages();
+        const msg = list[index];
         if (!msg) return;
 
         activeReplyTo = {
@@ -1387,7 +1902,6 @@
         event.stopPropagation();
         if (!canDelete) return;
 
-        // ئەگەر کلیک لەسەر دوگمە، وێنە، دەنگ، ڕیاکشن یان باکسی ڕیپلە بوو با لێرە تێک نەدرێت
         if (event.target.closest('button, img, audio, .reaction-chip, .quoted-reply-box')) {
             return;
         }
@@ -1479,10 +1993,11 @@
     }
 
     function applyReactionLocally(msgId, emoji, userName, removeOnly = false) {
-        const msgIndex = messages.findIndex(m => m.id === msgId);
+        const targetList = getCurrentDisplayedMessages();
+        const msgIndex = targetList.findIndex(m => m.id === msgId);
         if (msgIndex === -1) return;
 
-        const msg = messages[msgIndex];
+        const msg = targetList[msgIndex];
         const currentReactions = normalizeReactionsData(msg.reactions);
         const userKey = getSafeKey(userName);
 
@@ -1502,7 +2017,9 @@
         }
 
         msg.reactions = currentReactions;
-        safeStorageSet('chat_single_messages', JSON.stringify(messages));
+        if (chatMode === 'group') {
+            safeStorageSet('chat_single_messages', JSON.stringify(messages));
+        }
         renderMessages(true);
     }
 
@@ -1511,12 +2028,13 @@
         const targetMsgId = activeReactionMsgId;
         const userKey = getSafeKey(currentUser);
         const emojiKey = getReactionKey(emoji);
+        const baseRef = getActiveMessagesRef();
 
         closeReactionPicker();
         applyReactionLocally(targetMsgId, emoji, currentUser, false);
 
-        const userRef = messagesRef.child(targetMsgId).child('reactions').child(emojiKey).child('users').child(userKey);
-        const emojiMetaRef = messagesRef.child(targetMsgId).child('reactions').child(emojiKey).child('emoji');
+        const userRef = baseRef.child(targetMsgId).child('reactions').child(emojiKey).child('users').child(userKey);
+        const emojiMetaRef = baseRef.child(targetMsgId).child('reactions').child(emojiKey).child('emoji');
 
         userRef.once('value', (snap) => {
             if (snap.exists()) {
@@ -1536,11 +2054,12 @@
         }
         const userKey = getSafeKey(currentUser);
         const emojiKey = getReactionKey(emoji);
+        const baseRef = getActiveMessagesRef();
 
         applyReactionLocally(msgId, emoji, currentUser, false);
 
-        const userRef = messagesRef.child(msgId).child('reactions').child(emojiKey).child('users').child(userKey);
-        const emojiMetaRef = messagesRef.child(msgId).child('reactions').child(emojiKey).child('emoji');
+        const userRef = baseRef.child(msgId).child('reactions').child(emojiKey).child('users').child(userKey);
+        const emojiMetaRef = baseRef.child(msgId).child('reactions').child(emojiKey).child('emoji');
 
         userRef.once('value', (snap) => {
             if (snap.exists()) {
@@ -1555,6 +2074,11 @@
     let latestCloudMembers = [];
 
     function listenToRealtimeUpdates() {
+        usersRef.on('value', (snapshot) => {
+            registeredUsersMap = snapshot.val() || {};
+            rebuildMembersList(latestCloudMembers);
+        });
+
         adminsRef.on('value', (snapshot) => {
             const val = snapshot.val() || {};
             adminsList = Object.values(val).filter(Boolean);
@@ -1580,12 +2104,17 @@
             }
 
             rebuildMembersList(latestCloudMembers);
+            renderRecentPrivateChatsUI();
         });
 
         membersRef.on('value', (snapshot) => {
             const val = snapshot.val() || {};
             latestCloudMembers = Object.values(val).filter(Boolean);
             rebuildMembersList(latestCloudMembers);
+        });
+
+        privateChatsRef.on('value', () => {
+            loadRecentPrivateChats();
         });
 
         messagesRef.on('child_added', (snapshot) => {
@@ -1613,7 +2142,9 @@
 
             safeStorageSet('chat_single_messages', JSON.stringify(messages));
             rebuildMembersList(latestCloudMembers);
-            renderMessages();
+            if (chatMode === 'group') {
+                renderMessages();
+            }
         });
 
         messagesRef.on('child_changed', (snapshot) => {
@@ -1625,7 +2156,9 @@
                 messages[existingIndex].reactions = normalizeReactionsData(data.reactions);
                 messages[existingIndex].replyTo = data.replyTo || null;
                 safeStorageSet('chat_single_messages', JSON.stringify(messages));
-                renderMessages(true);
+                if (chatMode === 'group') {
+                    renderMessages(true);
+                }
             }
         });
 
@@ -1636,7 +2169,9 @@
             if (messages.length !== prevLen) {
                 selectedDeleteIndex = null;
                 safeStorageSet('chat_single_messages', JSON.stringify(messages));
-                renderMessages(true);
+                if (chatMode === 'group') {
+                    renderMessages(true);
+                }
             }
         });
     }
@@ -1659,42 +2194,24 @@
     function init() {
         buildReactionPickerEmojis();
         applyTheme(localStorage.getItem('chat_theme') || 'light');
+        updateChatHeaderUI();
         if (!currentUser) {
+            setAuthMode('login');
             document.getElementById('nameModal').style.display = 'flex';
             document.getElementById('usernameInput').focus();
         } else {
             document.getElementById('currentUserBadge').innerText = currentUser;
             syncMembers();
+            loadRecentPrivateChats();
         }
         rebuildMembersList();
         renderMessages();
         listenToRealtimeUpdates();
     }
 
-    function saveUsername() {
-        const input = document.getElementById('usernameInput');
-        const name = input.value.trim();
-        if (!name) {
-            alert('تکایە ناوێک بنووسە!');
-            return;
-        }
-        if (isBanned(name)) {
-            alert('ئەم ناوە لە گرووپ دەرکراوە؛ ناوێکی تر بنووسە.');
-            return;
-        }
-
-        currentUser = name;
-        safeStorageSet('chat_single_user', currentUser);
-        document.getElementById('currentUserBadge').innerText = currentUser;
-        document.getElementById('nameModal').style.display = 'none';
-        document.getElementById('messageInput').focus();
-        syncMembers();
-        renderMessages();
-    }
-
     function handleNameKeyPress(event) {
         if (event.key === 'Enter') {
-            saveUsername();
+            submitAccountAuth();
         }
     }
 
@@ -1732,22 +2249,30 @@
     function renderMessages(preserveScroll = false) {
         const container = document.getElementById('messagesContainer');
         const prevScrollTop = container.scrollTop;
+        const activeList = getCurrentDisplayedMessages();
         container.innerHTML = '';
 
-        messages.forEach((msg, index) => {
+        if (activeList.length === 0) {
+            const emptyText = chatMode === 'private'
+                ? `هیچ نامەیەک لە چاتی شەخسی لەگەڵ "${activePrivatePartner}" نییە؛ یەکەم نامە بنێرە!`
+                : 'هێشتا هیچ نامەیەک لە گروپدا نییە.';
+            container.innerHTML = `<div class="empty-chat-hint">${escapeHtml(emptyText)}</div>`;
+            return;
+        }
+
+        activeList.forEach((msg, index) => {
             const div = document.createElement('div');
             if (msg.id) {
                 div.setAttribute('data-msg-id', msg.id);
             }
             const isMe = msg.sender === currentUser;
-            const canDelete = isMe || canKickMembers(currentUser);
+            const canDelete = chatMode === 'private' ? isMe : (isMe || canKickMembers(currentUser));
             const showDelete = canDelete && selectedDeleteIndex === index;
 
             div.className = `message ${isMe ? 'sent' : 'received'}${showDelete ? ' show-delete' : ''}`;
             div.onclick = (e) => handleSingleTapMessage(e, index, canDelete);
             div.ondblclick = (e) => handleDoubleTapMessage(e, index);
 
-            // پشتگیری دوو پەنجە بۆ مۆبایلەکان (Double Tap on touch)
             let lastTouchTime = 0;
             div.addEventListener('touchend', function(e) {
                 if (e.target.closest('button, audio, .reaction-chip, .quoted-reply-box')) return;
@@ -1823,20 +2348,32 @@
         if (event && event.stopPropagation) {
             event.stopPropagation();
         }
-        if (index < 0 || index >= messages.length) return;
+        const targetList = getCurrentDisplayedMessages();
+        if (index < 0 || index >= targetList.length) return;
+
         if (confirm('دڵنیایت دەتەوێت ئەمە بسڕیتەوە؟')) {
-            const targetMsg = messages[index];
+            const targetMsg = targetList[index];
+            const targetRef = getActiveMessagesRef();
+
             if (targetMsg && targetMsg.id) {
-                messagesRef.child(targetMsg.id).remove();
+                targetRef.child(targetMsg.id).remove();
             }
-            messages.splice(index, 1);
-            selectedDeleteIndex = null;
-            saveAndRender();
+
+            if (chatMode === 'private') {
+                privateMessages.splice(index, 1);
+                selectedDeleteIndex = null;
+                renderMessages(true);
+            } else {
+                messages.splice(index, 1);
+                selectedDeleteIndex = null;
+                saveAndRender();
+            }
         }
     }
 
     function pushMessageToCloud(payload) {
-        const newRef = messagesRef.push();
+        const targetRef = getActiveMessagesRef();
+        const newRef = targetRef.push();
         const msgId = newRef.key;
         const msgData = {
             id: msgId,
@@ -1850,8 +2387,14 @@
             createdAt: firebase.database.ServerValue.TIMESTAMP
         };
 
-        messages.push(msgData);
-        saveAndRender();
+        if (chatMode === 'private') {
+            privateMessages.push(msgData);
+            renderMessages();
+        } else {
+            messages.push(msgData);
+            saveAndRender();
+        }
+
         newRef.set(msgData).catch((err) => {
             alert('هەڵە لە ناردنی نامە بۆ سێرڤەر: ' + err.message);
         });
@@ -2030,7 +2573,7 @@
             isRecording = false;
             voiceBtn.classList.remove('recording');
             voiceBtn.innerText = '🎤';
-            statusText.innerText = 'ناردنی نامە، وێنە و ڤۆیس';
+            updateChatHeaderUI();
         }
     }
 
