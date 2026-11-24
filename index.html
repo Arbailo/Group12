@@ -60,16 +60,6 @@
 
         .chat-header h3 {
             font-size: 17px;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .chat-header small {
-            font-size: 11px;
-            color: #d9f2ee;
-            display: block;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -130,7 +120,7 @@
         .members-dropdown {
             display: none;
             position: absolute;
-            top: 64px;
+            top: 60px;
             left: 16px;
             width: min(92vw, 330px);
             background-color: #ffffff;
@@ -385,6 +375,24 @@
             background-color: rgba(0, 0, 0, 0.06);
         }
 
+        .react-bottom-btn {
+            font-size: 13px;
+            font-weight: bold;
+            color: #075e54;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .react-bottom-btn:hover {
+            background-color: rgba(18, 140, 126, 0.18);
+        }
+
         .delete-btn {
             display: none;
             color: #d93025;
@@ -445,12 +453,185 @@
             transform: scale(1.01);
         }
 
-        .message audio {
-            width: 230px;
-            max-width: 100%;
-            height: 36px;
+        /* پلەیەری دەنگی: تەنها لەرەلەری کارا + خێرایی 0.5x / 1x / 1.5x / 2x */
+        .voice-player-box {
             margin-top: 6px;
-            display: block;
+            background: linear-gradient(135deg, rgba(18, 140, 126, 0.14), rgba(7, 94, 84, 0.07));
+            border: 1px solid rgba(18, 140, 126, 0.28);
+            border-radius: 16px;
+            padding: 9px 11px;
+            width: 275px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .voice-player-main {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .voice-play-toggle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background-color: #128c7e;
+            color: #ffffff;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+            transition: transform 0.12s, background-color 0.15s;
+        }
+
+        .voice-play-toggle:hover {
+            background-color: #0e7367;
+            transform: scale(1.05);
+        }
+
+        .voice-wave-track {
+            position: relative;
+            flex: 1;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            direction: ltr;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .voice-wave-bars {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2px;
+            pointer-events: none;
+        }
+
+        .voice-wave-bar {
+            flex: 1;
+            min-width: 2.5px;
+            border-radius: 99px;
+            background-color: rgba(18, 140, 126, 0.34);
+            transition: background-color 0.08s, transform 0.1s;
+        }
+
+        .voice-wave-bar.played {
+            background-color: #075e54;
+        }
+
+        .voice-wave-bar.current-pos {
+            transform: scaleY(1.12);
+        }
+
+        .voice-speed-btn {
+            border: 1px solid rgba(18, 140, 126, 0.35);
+            background-color: rgba(255, 255, 255, 0.72);
+            color: #075e54;
+            border-radius: 10px;
+            padding: 3px 6px;
+            font-size: 10.5px;
+            font-weight: 800;
+            cursor: pointer;
+            flex-shrink: 0;
+            direction: ltr;
+            transition: background-color 0.15s, transform 0.1s;
+        }
+
+        .voice-speed-btn:hover {
+            background-color: rgba(18, 140, 126, 0.18);
+            transform: scale(1.04);
+        }
+
+        .voice-time-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #075e54;
+            direction: ltr;
+            padding: 0 2px;
+        }
+
+        /* ستایلی فایلی PDF */
+        .pdf-message-card {
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(220, 38, 38, 0.25);
+            border-right: 4px solid #dc2626;
+            border-radius: 10px;
+            padding: 9px 11px;
+            min-width: 220px;
+            max-width: 100%;
+        }
+
+        .pdf-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .pdf-badge-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background-color: #fee2e2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .pdf-file-info {
+            min-width: 0;
+        }
+
+        .pdf-file-name {
+            font-size: 12.5px;
+            font-weight: bold;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 155px;
+        }
+
+        .pdf-file-sub {
+            font-size: 10.5px;
+            color: #64748b;
+        }
+
+        .pdf-open-btn {
+            background-color: #dc2626;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px 9px;
+            border-radius: 7px;
+            flex-shrink: 0;
+            transition: background-color 0.15s;
+        }
+
+        .pdf-open-btn:hover {
+            background-color: #b91c1c;
         }
 
         /* ڕیاکشنەکانی سەر نامە */
@@ -558,8 +739,10 @@
 
         .message-footer {
             display: flex;
-            justify-content: flex-start;
-            margin-top: 4px;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
         }
 
         .timestamp {
@@ -618,23 +801,23 @@
             color: #d93025;
         }
 
-        /* بەشی ناردنی نامە، ڕەسم، و ڤۆیس */
+        /* بەشی ناردنی نامە، ڕەسم، PDF، و ڤۆیس */
         .input-area {
             background-color: #f0f2f5;
-            padding: 10px 14px;
+            padding: 9px 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
         }
 
         .input-area input[type="text"] {
             flex: 1;
             min-width: 0;
-            padding: 12px 15px;
+            padding: 11px 14px;
             border: none;
             border-radius: 24px;
             outline: none;
-            font-size: 15px;
+            font-size: 14.5px;
             background-color: #ffffff;
         }
 
@@ -642,20 +825,25 @@
             background-color: #128c7e;
             color: white;
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 17px;
             flex-shrink: 0;
             transition: background-color 0.2s, transform 0.15s;
         }
 
         .icon-btn:hover {
             opacity: 0.92;
+            transform: scale(1.04);
+        }
+
+        .pdf-btn {
+            background-color: #dc2626;
         }
 
         .voice-btn.recording {
@@ -673,11 +861,11 @@
             background-color: #075e54;
             color: white;
             border: none;
-            padding: 11px 18px;
+            padding: 10px 16px;
             border-radius: 24px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14.5px;
             flex-shrink: 0;
         }
 
@@ -855,10 +1043,6 @@
             border-bottom: 1px solid #2a3942;
         }
 
-        body.dark-mode .chat-header small {
-            color: #8696a0;
-        }
-
         body.dark-mode .members-btn,
         body.dark-mode .switch-mode-btn {
             background-color: #2a3942;
@@ -961,6 +1145,15 @@
             background-color: rgba(255, 255, 255, 0.08);
         }
 
+        body.dark-mode .react-bottom-btn {
+            color: #34d399;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-mode .react-bottom-btn:hover {
+            background-color: rgba(0, 168, 132, 0.25);
+        }
+
         body.dark-mode .quoted-reply-box {
             background-color: rgba(0, 0, 0, 0.22);
             border-right-color: #00a884;
@@ -972,6 +1165,61 @@
 
         body.dark-mode .quoted-reply-text {
             color: #c5d1d8;
+        }
+
+        body.dark-mode .voice-player-box {
+            background: linear-gradient(135deg, rgba(0, 168, 132, 0.16), rgba(17, 27, 33, 0.6));
+            border-color: rgba(0, 168, 132, 0.34);
+        }
+
+        body.dark-mode .voice-play-toggle {
+            background-color: #00a884;
+            color: #111b21;
+        }
+
+        body.dark-mode .voice-play-toggle:hover {
+            background-color: #26c2a0;
+        }
+
+        body.dark-mode .voice-wave-bar {
+            background-color: rgba(233, 237, 239, 0.25);
+        }
+
+        body.dark-mode .voice-wave-bar.played {
+            background-color: #00a884;
+        }
+
+        body.dark-mode .voice-speed-btn {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 168, 132, 0.45);
+            color: #34d399;
+        }
+
+        body.dark-mode .voice-speed-btn:hover {
+            background-color: rgba(0, 168, 132, 0.22);
+        }
+
+        body.dark-mode .voice-time-row {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .pdf-message-card {
+            background-color: rgba(17, 27, 33, 0.72);
+            border-color: rgba(248, 113, 113, 0.3);
+            border-right-color: #ef4444;
+        }
+
+        body.dark-mode .pdf-badge-icon {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        body.dark-mode .pdf-file-name {
+            color: #e9edef;
+        }
+
+        body.dark-mode .pdf-file-sub {
+            color: #94a3b8;
         }
 
         body.dark-mode .reaction-chip {
@@ -1059,6 +1307,11 @@
             color: #e9edef;
         }
 
+        body.dark-mode .pdf-btn {
+            background-color: #991b1b;
+            color: #fee2e2;
+        }
+
         body.dark-mode .voice-btn.recording {
             background-color: #d93025;
             color: white;
@@ -1135,7 +1388,6 @@
     <div class="chat-header">
         <div class="header-title-wrap">
             <h3 id="chatTitleText">چاتی گروپی</h3>
-            <small id="statusText">ناردنی نامە، وێنە و ڤۆیس</small>
         </div>
         <div class="header-actions">
             <button type="button" class="switch-mode-btn" id="switchChatModeBtn" onclick="handleHeaderChatModeClick()">💬 شەخسی</button>
@@ -1183,6 +1435,9 @@
         <label for="imageInput" class="icon-btn" title="ناردنی ڕەسم">📷</label>
         <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="sendImage(event)">
 
+        <label for="pdfInput" class="icon-btn pdf-btn" title="ناردنی فایلی PDF">📄</label>
+        <input type="file" id="pdfInput" accept="application/pdf,.pdf" style="display: none;" onchange="sendPdfFile(event)">
+
         <button type="button" class="icon-btn voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()" title="تۆمارکردنی ڤۆیس">🎤</button>
 
         <input type="text" id="messageInput" placeholder="نامەیەک بنووسە..." onkeypress="handleMessageKeyPress(event)">
@@ -1223,6 +1478,13 @@
         '💋', '👎🏻', '👏🏻', '🤲🏻', '🌹', '🌚'
     ];
 
+    const WAVE_HEIGHTS = [
+        38, 65, 92, 54, 80, 100, 45, 72, 95, 60, 42, 85, 100, 58, 76,
+        48, 88, 64, 96, 52, 70, 84, 44, 90, 62, 78, 46, 68
+    ];
+
+    const PLAYBACK_SPEEDS = [1, 1.5, 2, 0.5];
+
     function safeStorageSet(key, value) {
         try {
             localStorage.setItem(key, value);
@@ -1237,7 +1499,7 @@
     }
 
     let currentUser = localStorage.getItem('chat_single_user') || '';
-    let authMode = 'login'; // 'login' | 'register'
+    let authMode = 'login';
     let registeredUsersMap = {};
 
     // دۆخی چات: 'group' یان 'private'
@@ -1379,7 +1641,6 @@
                 });
             } else {
                 if (!existing || !existing.passwordHash) {
-                    // ئەگەر ناوەکە لە سیستەمی کۆندا بوو یان تازە بوو، ئەگەر پاسۆردی نەبوو دەتوانێت تۆماری بکات
                     if (confirm('ئەم ناوە ئەکاونتی تۆمارکراوی نییە. دەتەوێت بەم ناو و پاسۆردە ئەکاونتێکی نوێ دروست بکەیت؟')) {
                         usersRef.child(userKey).set({
                             username: name,
@@ -1513,19 +1774,16 @@
 
     function updateChatHeaderUI() {
         const titleEl = document.getElementById('chatTitleText');
-        const statusEl = document.getElementById('statusText');
         const modeBtn = document.getElementById('switchChatModeBtn');
 
         if (chatMode === 'private' && activePrivatePartner) {
             titleEl.innerText = `چاتی شەخسی: ${activePrivatePartner}`;
-            statusEl.innerText = 'نامەی تایبەت لە نێوان تۆ و ئەم ئەندامە';
             modeBtn.innerText = '👥 گروپ';
             modeBtn.classList.add('dm-active');
         } else {
             chatMode = 'group';
             activePrivatePartner = '';
             titleEl.innerText = 'چاتی گروپی';
-            statusEl.innerText = 'ناردنی نامە، وێنە و ڤۆیس';
             modeBtn.innerText = '💬 شەخسی';
             modeBtn.classList.remove('dm-active');
         }
@@ -1540,7 +1798,6 @@
         if (chatMode === 'private') {
             switchToGroupChat();
         } else {
-            // لیستی ئەندامان دەکاتەوە تا کەسێک بۆ چاتی شەخسی هەڵبژێریت
             const dropdown = document.getElementById('membersDropdown');
             dropdown.classList.add('show');
         }
@@ -1603,6 +1860,7 @@
                 text: data.text || '',
                 image: data.image || null,
                 audio: data.audio || null,
+                pdf: data.pdf || null,
                 time: data.time || '',
                 replyTo: data.replyTo || null,
                 reactions: normalizeReactionsData(data.reactions)
@@ -1715,6 +1973,176 @@
 
     function escapeJs(text) {
         return String(text).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    function formatAudioSeconds(sec) {
+        if (!Number.isFinite(sec) || sec < 0) return '0:00';
+        const total = Math.floor(sec);
+        const mins = Math.floor(total / 60);
+        const rem = total % 60;
+        return `${mins}:${String(rem).padStart(2, '0')}`;
+    }
+
+    function buildVoicePlayerHtml(audioSrc) {
+        const barsHtml = WAVE_HEIGHTS.map((h, idx) =>
+            `<span class="voice-wave-bar" data-bar-idx="${idx}" style="height: ${h}%;"></span>`
+        ).join('');
+
+        return `
+            <div class="voice-player-box" onclick="event.stopPropagation()">
+                <audio class="voice-hidden-audio" preload="metadata" src="${audioSrc}"></audio>
+                <div class="voice-player-main">
+                    <button type="button" class="voice-play-toggle" onclick="toggleVoicePlay(event, this)" title="لێدان / وەستان">▶</button>
+                    <div class="voice-wave-track">
+                        <div class="voice-wave-bars">${barsHtml}</div>
+                    </div>
+                    <button type="button" class="voice-speed-btn" data-speed="1" onclick="cycleVoiceSpeed(event, this)" title="خێرایی دەنگ">1x</button>
+                </div>
+                <div class="voice-time-row">
+                    <span class="voice-current-time">0:00</span>
+                    <span class="voice-total-time">0:00</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function syncVoicePlayerVisual(box, audio) {
+        if (!box || !audio) return;
+        const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+        const current = duration > 0 ? Math.min(audio.currentTime || 0, duration) : 0;
+        const ratio = duration > 0 ? (current / duration) : 0;
+
+        const bars = box.querySelectorAll('.voice-wave-bar');
+        const totalBars = bars.length;
+        const activeCount = ratio > 0 ? Math.max(1, Math.round(ratio * totalBars)) : 0;
+        const currentBarIdx = ratio > 0 ? Math.min(totalBars - 1, Math.floor(ratio * totalBars)) : -1;
+
+        bars.forEach((bar, i) => {
+            bar.classList.toggle('played', i < activeCount);
+            bar.classList.toggle('current-pos', i === currentBarIdx);
+        });
+
+        const curEl = box.querySelector('.voice-current-time');
+        const totEl = box.querySelector('.voice-total-time');
+        if (curEl) {
+            curEl.innerText = formatAudioSeconds(current);
+        }
+        if (totEl && duration > 0) {
+            totEl.innerText = formatAudioSeconds(duration);
+        }
+    }
+
+    function seekVoiceByClientX(box, audio, clientX) {
+        const track = box.querySelector('.voice-wave-track');
+        if (!track || !audio) return;
+        const rect = track.getBoundingClientRect();
+        if (!rect.width) return;
+
+        const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        if (Number.isFinite(audio.duration) && audio.duration > 0) {
+            audio.currentTime = ratio * audio.duration;
+        }
+        syncVoicePlayerVisual(box, audio);
+    }
+
+    function setupVoicePlayers() {
+        document.querySelectorAll('.voice-player-box').forEach(box => {
+            if (box.dataset.bound === '1') return;
+            box.dataset.bound = '1';
+
+            const audio = box.querySelector('.voice-hidden-audio');
+            const btn = box.querySelector('.voice-play-toggle');
+            const track = box.querySelector('.voice-wave-track');
+            if (!audio) return;
+
+            audio.playbackRate = 1;
+
+            const onMeta = () => syncVoicePlayerVisual(box, audio);
+            audio.addEventListener('loadedmetadata', onMeta);
+            audio.addEventListener('durationchange', onMeta);
+            audio.addEventListener('timeupdate', () => syncVoicePlayerVisual(box, audio));
+            audio.addEventListener('play', () => {
+                document.querySelectorAll('.voice-hidden-audio').forEach(other => {
+                    if (other !== audio && !other.paused) {
+                        other.pause();
+                    }
+                });
+                if (btn) btn.innerText = '⏸';
+            });
+            audio.addEventListener('pause', () => {
+                if (btn) btn.innerText = '▶';
+            });
+            audio.addEventListener('ended', () => {
+                if (btn) btn.innerText = '▶';
+                audio.currentTime = 0;
+                syncVoicePlayerVisual(box, audio);
+            });
+
+            if (track) {
+                let isDraggingWave = false;
+
+                track.addEventListener('pointerdown', (e) => {
+                    e.stopPropagation();
+                    isDraggingWave = true;
+                    try {
+                        track.setPointerCapture(e.pointerId);
+                    } catch (_) {}
+                    seekVoiceByClientX(box, audio, e.clientX);
+                });
+
+                track.addEventListener('pointermove', (e) => {
+                    if (!isDraggingWave) return;
+                    e.stopPropagation();
+                    seekVoiceByClientX(box, audio, e.clientX);
+                });
+
+                const finishDrag = (e) => {
+                    if (!isDraggingWave) return;
+                    e.stopPropagation();
+                    isDraggingWave = false;
+                    try {
+                        track.releasePointerCapture(e.pointerId);
+                    } catch (_) {}
+                };
+
+                track.addEventListener('pointerup', finishDrag);
+                track.addEventListener('pointercancel', finishDrag);
+            }
+
+            if (audio.readyState >= 1) {
+                syncVoicePlayerVisual(box, audio);
+            }
+        });
+    }
+
+    function toggleVoicePlay(event, btn) {
+        event.stopPropagation();
+        const box = btn.closest('.voice-player-box');
+        if (!box) return;
+        const audio = box.querySelector('.voice-hidden-audio');
+        if (!audio) return;
+
+        if (audio.paused) {
+            audio.play().catch(() => {});
+        } else {
+            audio.pause();
+        }
+    }
+
+    function cycleVoiceSpeed(event, speedBtn) {
+        event.stopPropagation();
+        const box = speedBtn.closest('.voice-player-box');
+        if (!box) return;
+        const audio = box.querySelector('.voice-hidden-audio');
+        if (!audio) return;
+
+        const currentSpeed = Number(speedBtn.dataset.speed) || 1;
+        const idx = PLAYBACK_SPEEDS.indexOf(currentSpeed);
+        const nextSpeed = PLAYBACK_SPEEDS[(idx + 1) % PLAYBACK_SPEEDS.length];
+
+        speedBtn.dataset.speed = String(nextSpeed);
+        speedBtn.innerText = `${nextSpeed}x`;
+        audio.playbackRate = nextSpeed;
     }
 
     function toggleModerator(targetName) {
@@ -1853,6 +2281,8 @@
         if (!msg) return '';
         if (msg.text && msg.text.trim()) return msg.text.trim();
         if (msg.image) return '📷 وێنە';
+        if (msg.pdf && msg.pdf.name) return `📄 ${msg.pdf.name}`;
+        if (msg.pdf) return '📄 فایلی PDF';
         if (msg.audio) return '🎤 ڤۆیس';
         return 'نامە';
     }
@@ -1902,7 +2332,7 @@
         event.stopPropagation();
         if (!canDelete) return;
 
-        if (event.target.closest('button, img, audio, .reaction-chip, .quoted-reply-box')) {
+        if (event.target.closest('button, input, a, img, .voice-player-box, .reaction-chip, .quoted-reply-box')) {
             return;
         }
 
@@ -1916,7 +2346,7 @@
 
     function handleDoubleTapMessage(event, index) {
         event.stopPropagation();
-        if (event.target.closest('button, audio, .reaction-chip, .quoted-reply-box')) {
+        if (event.target.closest('button, input, a, .voice-player-box, .reaction-chip, .quoted-reply-box')) {
             return;
         }
         selectedDeleteIndex = null;
@@ -2129,6 +2559,7 @@
                 text: data.text || '',
                 image: data.image || null,
                 audio: data.audio || null,
+                pdf: data.pdf || null,
                 time: data.time || '',
                 replyTo: data.replyTo || null,
                 reactions: normalizeReactionsData(data.reactions)
@@ -2275,7 +2706,7 @@
 
             let lastTouchTime = 0;
             div.addEventListener('touchend', function(e) {
-                if (e.target.closest('button, audio, .reaction-chip, .quoted-reply-box')) return;
+                if (e.target.closest('button, input, a, .voice-player-box, .reaction-chip, .quoted-reply-box')) return;
                 const now = Date.now();
                 if (now - lastTouchTime < 320 && now - lastTouchTime > 0) {
                     e.preventDefault();
@@ -2287,11 +2718,12 @@
                 }
             }, { passive: false });
 
-            const reactBtnHtml = msg.id
-                ? `<button type="button" class="action-icon-btn" onclick="openReactionPicker(event, '${escapeJs(msg.id)}')" title="ڕیاکشن دانان">➕</button>`
-                : '';
             const deleteBtnHtml = canDelete
                 ? `<button type="button" class="action-icon-btn delete-btn" onclick="deleteMessage(event, ${index})" title="سڕینەوە">🗑️</button>`
+                : '';
+
+            const reactBottomBtnHtml = msg.id
+                ? `<button type="button" class="action-icon-btn react-bottom-btn" onclick="openReactionPicker(event, '${escapeJs(msg.id)}')" title="ڕیاکشن دانان">➕</button>`
                 : '';
 
             let quotedHtml = '';
@@ -2308,7 +2740,6 @@
                 <div class="message-top">
                     <span class="sender-name">${escapeHtml(msg.sender)}</span>
                     <div class="message-actions-inline">
-                        ${reactBtnHtml}
                         ${deleteBtnHtml}
                     </div>
                 </div>
@@ -2321,8 +2752,24 @@
             if (msg.image) {
                 content += `<img src="${msg.image}" alt="ڕەسمی نێردراو" onclick="openImageViewer(this.src)">`;
             }
+            if (msg.pdf && msg.pdf.data) {
+                const fileName = msg.pdf.name || 'document.pdf';
+                const sizeKb = msg.pdf.sizeKb ? `${msg.pdf.sizeKb} KB` : 'PDF';
+                content += `
+                    <div class="pdf-message-card" onclick="event.stopPropagation()">
+                        <div class="pdf-meta">
+                            <span class="pdf-badge-icon">PDF</span>
+                            <div class="pdf-file-info">
+                                <div class="pdf-file-name" title="${escapeHtml(fileName)}">${escapeHtml(fileName)}</div>
+                                <div class="pdf-file-sub">${escapeHtml(sizeKb)}</div>
+                            </div>
+                        </div>
+                        <a class="pdf-open-btn" href="${msg.pdf.data}" download="${escapeHtml(fileName)}" target="_blank" rel="noopener">کردنەوە</a>
+                    </div>
+                `;
+            }
             if (msg.audio) {
-                content += `<audio controls playsinline src="${msg.audio}"></audio>`;
+                content += buildVoicePlayerHtml(msg.audio);
             }
 
             content += renderReactionsHtml(msg);
@@ -2330,12 +2777,15 @@
             content += `
                 <div class="message-footer">
                     <span class="timestamp">${escapeHtml(msg.time)}</span>
+                    ${reactBottomBtnHtml}
                 </div>
             `;
 
             div.innerHTML = content;
             container.appendChild(div);
         });
+
+        setupVoicePlayers();
 
         if (preserveScroll) {
             container.scrollTop = prevScrollTop;
@@ -2381,6 +2831,7 @@
             text: payload.text || '',
             image: payload.image || null,
             audio: payload.audio || null,
+            pdf: payload.pdf || null,
             time: payload.time || getCurrentTime(),
             replyTo: payload.replyTo || null,
             reactions: {},
@@ -2415,12 +2866,68 @@
                 text: text,
                 image: null,
                 audio: null,
+                pdf: null,
                 time: getCurrentTime(),
                 replyTo: replySnapshot
             });
             input.value = '';
             cancelReply();
+            closeReactionPicker();
         }
+    }
+
+    function sendPdfFile(event) {
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            event.target.value = '';
+            return;
+        }
+
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+        if (!isPdf) {
+            alert('تکایە تەنها فایلی PDF هەڵبژێرە.');
+            event.target.value = '';
+            return;
+        }
+
+        const maxBytes = 2 * 1024 * 1024;
+        if (file.size > maxBytes) {
+            alert('قەبارەی فایلی PDF زۆرە؛ تکایە فایلێکی کەمتر لە 2 MB هەڵبژێرە.');
+            event.target.value = '';
+            return;
+        }
+
+        const replySnapshot = activeReplyTo ? { ...activeReplyTo } : null;
+        const sizeKb = Math.max(1, Math.round(file.size / 1024));
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (e.target && e.target.result) {
+                pushMessageToCloud({
+                    sender: currentUser,
+                    text: '',
+                    image: null,
+                    audio: null,
+                    pdf: {
+                        name: file.name,
+                        sizeKb: sizeKb,
+                        data: e.target.result
+                    },
+                    time: getCurrentTime(),
+                    replyTo: replySnapshot
+                });
+                cancelReply();
+            }
+            event.target.value = '';
+        };
+        reader.onerror = function() {
+            alert('نەتوانرا فایلی PDF بخوێنرێتەوە.');
+            event.target.value = '';
+        };
+        reader.readAsDataURL(file);
     }
 
     function compressImage(file, maxWidth = 800, quality = 0.7) {
@@ -2458,18 +2965,16 @@
         const file = event.target.files[0];
         if (!file) return;
 
-        const statusText = document.getElementById('statusText');
-        const prevStatus = statusText.innerText;
         const replySnapshot = activeReplyTo ? { ...activeReplyTo } : null;
 
         try {
-            statusText.innerText = 'خەریکی ئامادەکردن و ناردنی وێنەیە...';
             const compressedBase64 = await compressImage(file, 800, 0.7);
             pushMessageToCloud({
                 sender: currentUser,
                 text: '',
                 image: compressedBase64,
                 audio: null,
+                pdf: null,
                 time: getCurrentTime(),
                 replyTo: replySnapshot
             });
@@ -2477,7 +2982,6 @@
         } catch (err) {
             alert('نەتوانرا وێنەکە بنێردرێت؛ تکایە وێنەیەکی تر تاقیبکەرەوە.');
         } finally {
-            statusText.innerText = prevStatus;
             event.target.value = '';
         }
     }
@@ -2507,7 +3011,6 @@
         }
 
         const voiceBtn = document.getElementById('voiceBtn');
-        const statusText = document.getElementById('statusText');
 
         if (!isRecording) {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
@@ -2549,6 +3052,7 @@
                                 text: '',
                                 image: null,
                                 audio: reader.result,
+                                pdf: null,
                                 time: getCurrentTime(),
                                 replyTo: replySnapshot
                             });
@@ -2562,7 +3066,6 @@
                 isRecording = true;
                 voiceBtn.classList.add('recording');
                 voiceBtn.innerText = '⏹';
-                statusText.innerText = 'خەریکی تۆمارکردنی ڤۆیسە... (دوبارە دابگرە بۆ ناردن)';
             } catch (err) {
                 alert('تکایە مۆڵەتی مایکرۆفۆن بدە بۆ تۆمارکردنی ڤۆیس.');
             }
@@ -2573,7 +3076,6 @@
             isRecording = false;
             voiceBtn.classList.remove('recording');
             voiceBtn.innerText = '🎤';
-            updateChatHeaderUI();
         }
     }
 
