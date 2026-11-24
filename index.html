@@ -2,7 +2,7 @@
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>بەرنامەی چاتی گروپی و شەخسی</title>
     <style>
         * {
@@ -453,14 +453,14 @@
             transform: scale(1.01);
         }
 
-        /* پلەیەری دەنگی: تەنها لەرەلەری کارا + خێرایی 0.5x / 1x / 1.5x / 2x */
+        /* پلەیەری دەنگی بە لەرەلەری کوالێتی بەرز + خێرایی */
         .voice-player-box {
             margin-top: 6px;
             background: linear-gradient(135deg, rgba(18, 140, 126, 0.14), rgba(7, 94, 84, 0.07));
             border: 1px solid rgba(18, 140, 126, 0.28);
             border-radius: 16px;
             padding: 9px 11px;
-            width: 275px;
+            width: 285px;
             max-width: 100%;
             display: flex;
             flex-direction: column;
@@ -498,7 +498,7 @@
         .voice-wave-track {
             position: relative;
             flex: 1;
-            height: 34px;
+            height: 36px;
             display: flex;
             align-items: center;
             direction: ltr;
@@ -512,16 +512,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 2px;
+            gap: 1.5px;
             pointer-events: none;
         }
 
         .voice-wave-bar {
             flex: 1;
-            min-width: 2.5px;
+            min-width: 2px;
             border-radius: 99px;
             background-color: rgba(18, 140, 126, 0.34);
-            transition: background-color 0.08s, transform 0.1s;
+            transition: background-color 0.06s, transform 0.08s;
         }
 
         .voice-wave-bar.played {
@@ -529,7 +529,7 @@
         }
 
         .voice-wave-bar.current-pos {
-            transform: scaleY(1.12);
+            transform: scaleY(1.15);
         }
 
         .voice-speed-btn {
@@ -801,6 +801,139 @@
             color: #d93025;
         }
 
+        /* سێ بەشەکەی کاتی ڕاگرتنی پەنجە: ڕێک لە دەوری دوگمەی ڤۆیس (چەپ، سەرەوە، ڕاست) بە بێ نووسین */
+        .voice-anchor-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .voice-hold-orbit {
+            display: none;
+            position: absolute;
+            width: 124px;
+            height: 112px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -62%);
+            z-index: 260;
+            pointer-events: none;
+        }
+
+        .voice-hold-orbit.show {
+            display: block;
+        }
+
+        .orbit-node {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 1.5px solid rgba(18, 140, 126, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: transform 0.12s, background-color 0.12s, border-color 0.12s;
+        }
+
+        /* سەرەوە */
+        .orbit-node.node-up {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* چەپ */
+        .orbit-node.node-left {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        /* ڕاست */
+        .orbit-node.node-right {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+        }
+
+        .orbit-node.node-left.active {
+            transform: translateY(-50%) scale(1.18);
+            background-color: #fee2e2;
+            border-color: #dc2626;
+        }
+
+        .orbit-node.node-up.active {
+            transform: translateX(-50%) scale(1.18);
+            background-color: #dbeafe;
+            border-color: #2563eb;
+        }
+
+        .orbit-node.node-right.active {
+            transform: translateY(-50%) scale(1.18);
+            background-color: #fef3c7;
+            border-color: #d97706;
+        }
+
+        .voice-status-banner {
+            display: none;
+            background-color: #fef2f2;
+            border-top: 1px solid #fecaca;
+            padding: 7px 14px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #b91c1c;
+        }
+
+        .voice-status-banner.show {
+            display: flex;
+        }
+
+        .voice-status-banner.paused-state {
+            background-color: #fffbeb;
+            border-top-color: #fde68a;
+            color: #b45309;
+        }
+
+        .voice-status-banner.locked-state {
+            background-color: #eff6ff;
+            border-top-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .voice-banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .voice-mini-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .voice-mini-send {
+            background-color: #075e54;
+            color: #ffffff;
+        }
+
+        .voice-mini-cancel {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
         /* بەشی ناردنی نامە، ڕەسم، PDF، و ڤۆیس */
         .input-area {
             background-color: #f0f2f5;
@@ -808,6 +941,7 @@
             display: flex;
             align-items: center;
             gap: 7px;
+            position: relative;
         }
 
         .input-area input[type="text"] {
@@ -846,15 +980,34 @@
             background-color: #dc2626;
         }
 
+        .voice-btn {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            position: relative;
+            z-index: 265;
+        }
+
         .voice-btn.recording {
             background-color: #d93025;
+            transform: scale(1.12);
             animation: pulse 1s infinite;
         }
 
+        .voice-btn.paused {
+            background-color: #d97706;
+            animation: none;
+        }
+
+        .voice-btn.locked {
+            background-color: #2563eb;
+        }
+
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
+            0% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0.55); }
+            70% { box-shadow: 0 0 0 10px rgba(217, 48, 37, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0); }
         }
 
         .send-btn {
@@ -1203,6 +1356,55 @@
             color: #94a3b8;
         }
 
+        body.dark-mode .orbit-node {
+            background-color: rgba(32, 44, 51, 0.96);
+            border-color: rgba(0, 168, 132, 0.45);
+            color: #e9edef;
+        }
+
+        body.dark-mode .orbit-node.node-left.active {
+            background-color: rgba(220, 38, 38, 0.34);
+            border-color: #f87171;
+        }
+
+        body.dark-mode .orbit-node.node-up.active {
+            background-color: rgba(37, 99, 235, 0.34);
+            border-color: #60a5fa;
+        }
+
+        body.dark-mode .orbit-node.node-right.active {
+            background-color: rgba(217, 119, 6, 0.34);
+            border-color: #fbbf24;
+        }
+
+        body.dark-mode .voice-status-banner {
+            background-color: rgba(127, 29, 29, 0.35);
+            border-top-color: rgba(248, 113, 113, 0.35);
+            color: #fca5a5;
+        }
+
+        body.dark-mode .voice-status-banner.paused-state {
+            background-color: rgba(120, 53, 15, 0.35);
+            border-top-color: rgba(251, 191, 36, 0.35);
+            color: #fde68a;
+        }
+
+        body.dark-mode .voice-status-banner.locked-state {
+            background-color: rgba(30, 58, 138, 0.35);
+            border-top-color: rgba(96, 165, 250, 0.35);
+            color: #93c5fd;
+        }
+
+        body.dark-mode .voice-mini-send {
+            background-color: #00a884;
+            color: #111b21;
+        }
+
+        body.dark-mode .voice-mini-cancel {
+            background-color: rgba(220, 38, 38, 0.25);
+            color: #fca5a5;
+        }
+
         body.dark-mode .pdf-message-card {
             background-color: rgba(17, 27, 33, 0.72);
             border-color: rgba(248, 113, 113, 0.3);
@@ -1314,6 +1516,16 @@
 
         body.dark-mode .voice-btn.recording {
             background-color: #d93025;
+            color: white;
+        }
+
+        body.dark-mode .voice-btn.paused {
+            background-color: #d97706;
+            color: white;
+        }
+
+        body.dark-mode .voice-btn.locked {
+            background-color: #2563eb;
             color: white;
         }
 
@@ -1431,6 +1643,15 @@
         <button type="button" class="cancel-reply-btn" onclick="cancelReply()" title="هەڵوەشاندنەوەی ڕیپلەی">×</button>
     </div>
 
+    <!-- بانەری دۆخی ڤۆیس لە کاتی Toggle یان Pause -->
+    <div class="voice-status-banner" id="voiceStatusBanner">
+        <span id="voiceStatusText">تۆمارکردنی ڤۆیس چالاکە...</span>
+        <div class="voice-banner-actions">
+            <button type="button" class="voice-mini-btn voice-mini-send" id="voiceBannerFinishBtn" onclick="finishVoiceFromBanner()">ناردن</button>
+            <button type="button" class="voice-mini-btn voice-mini-cancel" id="voiceBannerCancelBtn" onclick="discardVoiceRecording()">سڕینەوە</button>
+        </div>
+    </div>
+
     <div class="input-area">
         <label for="imageInput" class="icon-btn" title="ناردنی ڕەسم">📷</label>
         <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="sendImage(event)">
@@ -1438,7 +1659,14 @@
         <label for="pdfInput" class="icon-btn pdf-btn" title="ناردنی فایلی PDF">📄</label>
         <input type="file" id="pdfInput" accept="application/pdf,.pdf" style="display: none;" onchange="sendPdfFile(event)">
 
-        <button type="button" class="icon-btn voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()" title="تۆمارکردنی ڤۆیس">🎤</button>
+        <div class="voice-anchor-wrapper">
+            <div class="voice-hold-orbit" id="voiceHoldOrbit">
+                <div class="orbit-node node-left" id="holdZoneLeft">🗑️</div>
+                <div class="orbit-node node-up" id="holdZoneUp">🔒</div>
+                <div class="orbit-node node-right" id="holdZoneRight">⏸</div>
+            </div>
+            <button type="button" class="icon-btn voice-btn" id="voiceBtn" title="پەنجە ڕابگرە بۆ تۆمارکردنی ڤۆیس">🎤</button>
+        </div>
 
         <input type="text" id="messageInput" placeholder="نامەیەک بنووسە..." onkeypress="handleMessageKeyPress(event)">
         <button type="button" class="send-btn" onclick="sendMessage()">ناردن</button>
@@ -1478,11 +1706,12 @@
         '💋', '👎🏻', '👏🏻', '🤲🏻', '🌹', '🌚'
     ];
 
-    const WAVE_HEIGHTS = [
-        38, 65, 92, 54, 80, 100, 45, 72, 95, 60, 42, 85, 100, 58, 76,
-        48, 88, 64, 96, 52, 70, 84, 44, 90, 62, 78, 46, 68
+    const FALLBACK_WAVE = [
+        34, 66, 92, 52, 82, 100, 44, 74, 96, 58, 42, 86, 100, 56, 78, 48, 90, 62,
+        95, 50, 72, 85, 45, 92, 60, 80, 46, 70, 88, 54, 76, 40, 84, 64, 50, 66
     ];
 
+    const WAVE_BAR_COUNT = 36;
     const PLAYBACK_SPEEDS = [1, 1.5, 2, 0.5];
 
     function safeStorageSet(key, value) {
@@ -1520,10 +1749,22 @@
     let activeReactionMsgId = null;
     let selectedDeleteIndex = null;
 
-    // داتای تۆمارکردنی ڤۆیس
+    // دۆخی تۆمارکردنی ڤۆیس بە Hold + سێ بەش + لەرەلەری ڕاستەقینە
     let mediaRecorder = null;
     let audioChunks = [];
-    let isRecording = false;
+    let activeStream = null;
+    let audioCtx = null;
+    let analyserNode = null;
+    let waveSampleTimer = null;
+    let recordedWaveSamples = [];
+    let pendingVoiceReplyTo = null;
+    let discardOnStop = false;
+
+    // voiceState: 'idle' | 'holding' | 'locked' | 'paused'
+    let voiceState = 'idle';
+    let holdStartX = 0;
+    let holdStartY = 0;
+    let activeHoldZone = null; // 'left' | 'up' | 'right' | null
 
     function getSafeKey(name) {
         return encodeURIComponent(String(name).trim()).replace(/\./g, '%2E');
@@ -1860,6 +2101,7 @@
                 text: data.text || '',
                 image: data.image || null,
                 audio: data.audio || null,
+                waveform: Array.isArray(data.waveform) ? data.waveform : null,
                 pdf: data.pdf || null,
                 time: data.time || '',
                 replyTo: data.replyTo || null,
@@ -1983,8 +2225,27 @@
         return `${mins}:${String(rem).padStart(2, '0')}`;
     }
 
-    function buildVoicePlayerHtml(audioSrc) {
-        const barsHtml = WAVE_HEIGHTS.map((h, idx) =>
+    function resampleWaveToBars(samples, targetCount = WAVE_BAR_COUNT) {
+        if (!Array.isArray(samples) || samples.length === 0) {
+            return FALLBACK_WAVE.slice(0, targetCount);
+        }
+        const out = [];
+        for (let i = 0; i < targetCount; i++) {
+            const pos = (i / targetCount) * samples.length;
+            const idx0 = Math.floor(pos);
+            const idx1 = Math.min(samples.length - 1, idx0 + 1);
+            const frac = pos - idx0;
+            const v0 = Number(samples[idx0]) || 25;
+            const v1 = Number(samples[idx1]) || 25;
+            const interpolated = v0 * (1 - frac) + v1 * frac;
+            out.push(Math.max(16, Math.min(100, Math.round(interpolated))));
+        }
+        return out;
+    }
+
+    function buildVoicePlayerHtml(audioSrc, waveData = null) {
+        const bars = resampleWaveToBars(waveData, WAVE_BAR_COUNT);
+        const barsHtml = bars.map((h, idx) =>
             `<span class="voice-wave-bar" data-bar-idx="${idx}" style="height: ${h}%;"></span>`
         ).join('');
 
@@ -2052,10 +2313,12 @@
 
             const audio = box.querySelector('.voice-hidden-audio');
             const btn = box.querySelector('.voice-play-toggle');
+            const speedBtn = box.querySelector('.voice-speed-btn');
             const track = box.querySelector('.voice-wave-track');
             if (!audio) return;
 
-            audio.playbackRate = 1;
+            const initSpeed = Number(speedBtn && speedBtn.dataset.speed) || 1;
+            audio.playbackRate = initSpeed;
 
             const onMeta = () => syncVoicePlayerVisual(box, audio);
             audio.addEventListener('loadedmetadata', onMeta);
@@ -2559,6 +2822,7 @@
                 text: data.text || '',
                 image: data.image || null,
                 audio: data.audio || null,
+                waveform: Array.isArray(data.waveform) ? data.waveform : null,
                 pdf: data.pdf || null,
                 time: data.time || '',
                 replyTo: data.replyTo || null,
@@ -2626,6 +2890,7 @@
         buildReactionPickerEmojis();
         applyTheme(localStorage.getItem('chat_theme') || 'light');
         updateChatHeaderUI();
+        setupVoiceHoldButton();
         if (!currentUser) {
             setAuthMode('login');
             document.getElementById('nameModal').style.display = 'flex';
@@ -2769,7 +3034,7 @@
                 `;
             }
             if (msg.audio) {
-                content += buildVoicePlayerHtml(msg.audio);
+                content += buildVoicePlayerHtml(msg.audio, msg.waveform);
             }
 
             content += renderReactionsHtml(msg);
@@ -2831,6 +3096,7 @@
             text: payload.text || '',
             image: payload.image || null,
             audio: payload.audio || null,
+            waveform: Array.isArray(payload.waveform) ? payload.waveform : null,
             pdf: payload.pdf || null,
             time: payload.time || getCurrentTime(),
             replyTo: payload.replyTo || null,
@@ -3004,79 +3270,337 @@
         return '';
     }
 
-    async function toggleVoiceRecording() {
-        if (!currentUser) {
-            document.getElementById('nameModal').style.display = 'flex';
+    function startWaveAnalyser(stream) {
+        stopWaveAnalyser();
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+
+            audioCtx = new AudioContextClass();
+            const source = audioCtx.createMediaStreamSource(stream);
+            analyserNode = audioCtx.createAnalyser();
+            analyserNode.fftSize = 256;
+            analyserNode.smoothingTimeConstant = 0.65;
+            source.connect(analyserNode);
+
+            const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+            waveSampleTimer = setInterval(() => {
+                if (!analyserNode || voiceState === 'paused' || voiceState === 'idle') return;
+                analyserNode.getByteFrequencyData(dataArray);
+
+                let sumSquares = 0;
+                let peak = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    const norm = dataArray[i] / 255;
+                    sumSquares += norm * norm;
+                    if (norm > peak) peak = norm;
+                }
+                const rms = Math.sqrt(sumSquares / dataArray.length);
+                const level = Math.min(1, rms * 1.9 + peak * 0.45);
+                const pct = Math.max(16, Math.min(100, Math.round(level * 100)));
+                recordedWaveSamples.push(pct);
+            }, 65);
+        } catch (_) {}
+    }
+
+    function stopWaveAnalyser() {
+        if (waveSampleTimer) {
+            clearInterval(waveSampleTimer);
+            waveSampleTimer = null;
+        }
+        if (audioCtx) {
+            try {
+                audioCtx.close();
+            } catch (_) {}
+            audioCtx = null;
+        }
+        analyserNode = null;
+    }
+
+    function cleanupMediaStream() {
+        stopWaveAnalyser();
+        if (activeStream) {
+            activeStream.getTracks().forEach(track => track.stop());
+            activeStream = null;
+        }
+    }
+
+    function updateVoiceUiState() {
+        const voiceBtn = document.getElementById('voiceBtn');
+        const orbitEl = document.getElementById('voiceHoldOrbit');
+        const bannerEl = document.getElementById('voiceStatusBanner');
+        const statusTextEl = document.getElementById('voiceStatusText');
+        const finishBtnEl = document.getElementById('voiceBannerFinishBtn');
+
+        voiceBtn.classList.remove('recording', 'paused', 'locked');
+        orbitEl.classList.remove('show');
+        bannerEl.classList.remove('show', 'paused-state', 'locked-state');
+
+        if (voiceState === 'holding') {
+            voiceBtn.classList.add('recording');
+            voiceBtn.innerText = '🎤';
+            orbitEl.classList.add('show');
+        } else if (voiceState === 'locked') {
+            voiceBtn.classList.add('locked');
+            voiceBtn.innerText = '⏹';
+            bannerEl.classList.add('show', 'locked-state');
+            statusTextEl.innerText = '🔒 Toggle';
+            finishBtnEl.innerText = 'ناردن';
+        } else if (voiceState === 'paused') {
+            voiceBtn.classList.add('paused');
+            voiceBtn.innerText = '▶';
+            bannerEl.classList.add('show', 'paused-state');
+            statusTextEl.innerText = '⏸';
+            finishBtnEl.innerText = 'ناردن';
+        } else {
+            voiceBtn.innerText = '🎤';
+        }
+
+        highlightHoldZone(activeHoldZone);
+    }
+
+    function highlightHoldZone(zone) {
+        const leftEl = document.getElementById('holdZoneLeft');
+        const upEl = document.getElementById('holdZoneUp');
+        const rightEl = document.getElementById('holdZoneRight');
+        if (!leftEl || !upEl || !rightEl) return;
+
+        leftEl.classList.toggle('active', zone === 'left');
+        upEl.classList.toggle('active', zone === 'up');
+        rightEl.classList.toggle('active', zone === 'right');
+    }
+
+    function detectHoldZone(clientX, clientY) {
+        const dx = clientX - holdStartX;
+        const dy = clientY - holdStartY;
+        const threshold = 28;
+
+        if (dy < -threshold && Math.abs(dy) >= Math.abs(dx)) {
+            return 'up';
+        }
+        if (dx < -threshold && Math.abs(dx) > Math.abs(dy)) {
+            return 'left';
+        }
+        if (dx > threshold && Math.abs(dx) > Math.abs(dy)) {
+            return 'right';
+        }
+        return null;
+    }
+
+    async function beginVoiceRecordingSession() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+            alert('بڕاوزەرەکەت پشتگیری تۆمارکردنی ڤۆیس ناکات.');
+            voiceState = 'idle';
+            updateVoiceUiState();
             return;
         }
 
-        const voiceBtn = document.getElementById('voiceBtn');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            activeStream = stream;
+            const mimeType = getSupportedAudioMimeType();
+            mediaRecorder = mimeType
+                ? new MediaRecorder(stream, { mimeType })
+                : new MediaRecorder(stream);
 
-        if (!isRecording) {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
-                alert('بڕاوزەرەکەت پشتگیری تۆمارکردنی ڤۆیس ناکات.');
+            audioChunks = [];
+            recordedWaveSamples = [];
+            discardOnStop = false;
+            pendingVoiceReplyTo = activeReplyTo ? { ...activeReplyTo } : null;
+
+            mediaRecorder.ondataavailable = function(event) {
+                if (event.data && event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = function() {
+                const shouldDiscard = discardOnStop;
+                const savedWave = resampleWaveToBars(recordedWaveSamples, WAVE_BAR_COUNT);
+                const savedReply = pendingVoiceReplyTo ? { ...pendingVoiceReplyTo } : null;
+
+                cleanupMediaStream();
+                mediaRecorder = null;
+                discardOnStop = false;
+                pendingVoiceReplyTo = null;
+                recordedWaveSamples = [];
+
+                if (shouldDiscard) {
+                    audioChunks = [];
+                    return;
+                }
+
+                if (!audioChunks.length) {
+                    return;
+                }
+
+                const blobType = (mediaRecorder && mediaRecorder.mimeType) || mimeType || 'audio/webm';
+                const audioBlob = new Blob(audioChunks, { type: blobType });
+                audioChunks = [];
+
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    if (reader.result) {
+                        pushMessageToCloud({
+                            sender: currentUser,
+                            text: '',
+                            image: null,
+                            audio: reader.result,
+                            waveform: savedWave,
+                            pdf: null,
+                            time: getCurrentTime(),
+                            replyTo: savedReply
+                        });
+                        if (savedReply && activeReplyTo && activeReplyTo.id === savedReply.id) {
+                            cancelReply();
+                        }
+                    }
+                };
+                reader.readAsDataURL(audioBlob);
+            };
+
+            mediaRecorder.start(80);
+            startWaveAnalyser(stream);
+        } catch (err) {
+            cleanupMediaStream();
+            voiceState = 'idle';
+            activeHoldZone = null;
+            updateVoiceUiState();
+            alert('تکایە مۆڵەتی مایکرۆفۆن بدە بۆ تۆمارکردنی ڤۆیس.');
+        }
+    }
+
+    function pauseVoiceRecording() {
+        if (!mediaRecorder) return;
+        try {
+            if (mediaRecorder.state === 'recording' && typeof mediaRecorder.pause === 'function') {
+                mediaRecorder.pause();
+            }
+        } catch (_) {}
+        voiceState = 'paused';
+        activeHoldZone = null;
+        updateVoiceUiState();
+    }
+
+    function resumeVoiceRecording() {
+        if (!mediaRecorder) return;
+        try {
+            if (mediaRecorder.state === 'paused' && typeof mediaRecorder.resume === 'function') {
+                mediaRecorder.resume();
+            }
+        } catch (_) {}
+        voiceState = 'locked';
+        activeHoldZone = null;
+        updateVoiceUiState();
+    }
+
+    function discardVoiceRecording() {
+        discardOnStop = true;
+        voiceState = 'idle';
+        activeHoldZone = null;
+        updateVoiceUiState();
+
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            try {
+                mediaRecorder.stop();
+            } catch (_) {
+                cleanupMediaStream();
+            }
+        } else {
+            cleanupMediaStream();
+        }
+    }
+
+    function finishVoiceFromBanner() {
+        discardOnStop = false;
+        voiceState = 'idle';
+        activeHoldZone = null;
+        updateVoiceUiState();
+
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            try {
+                if (mediaRecorder.state === 'paused' && typeof mediaRecorder.resume === 'function') {
+                    mediaRecorder.resume();
+                }
+                mediaRecorder.stop();
+            } catch (_) {
+                cleanupMediaStream();
+            }
+        } else {
+            cleanupMediaStream();
+        }
+    }
+
+    function setupVoiceHoldButton() {
+        const voiceBtn = document.getElementById('voiceBtn');
+        if (!voiceBtn) return;
+
+        voiceBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        voiceBtn.addEventListener('pointerdown', async (e) => {
+            if (!currentUser) {
+                document.getElementById('nameModal').style.display = 'flex';
+                return;
+            }
+            e.preventDefault();
+
+            if (voiceState === 'paused') {
+                resumeVoiceRecording();
                 return;
             }
 
+            if (voiceState === 'locked') {
+                finishVoiceFromBanner();
+                return;
+            }
+
+            if (voiceState !== 'idle') return;
+
+            holdStartX = e.clientX;
+            holdStartY = e.clientY;
+            activeHoldZone = null;
+            voiceState = 'holding';
+            updateVoiceUiState();
+
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const mimeType = getSupportedAudioMimeType();
-                mediaRecorder = mimeType
-                    ? new MediaRecorder(stream, { mimeType })
-                    : new MediaRecorder(stream);
+                voiceBtn.setPointerCapture(e.pointerId);
+            } catch (_) {}
 
-                audioChunks = [];
+            await beginVoiceRecordingSession();
+        });
 
-                mediaRecorder.ondataavailable = function(event) {
-                    if (event.data && event.data.size > 0) {
-                        audioChunks.push(event.data);
-                    }
-                };
+        voiceBtn.addEventListener('pointermove', (e) => {
+            if (voiceState !== 'holding') return;
+            e.preventDefault();
+            activeHoldZone = detectHoldZone(e.clientX, e.clientY);
+            highlightHoldZone(activeHoldZone);
+        });
 
-                mediaRecorder.onstop = function() {
-                    stream.getTracks().forEach(track => track.stop());
+        const handleHoldRelease = (e) => {
+            if (voiceState !== 'holding') return;
+            e.preventDefault();
+            try {
+                voiceBtn.releasePointerCapture(e.pointerId);
+            } catch (_) {}
 
-                    if (!audioChunks.length) {
-                        alert('هیچ دەنگێک تۆمار نەکرا.');
-                        return;
-                    }
+            const finalZone = detectHoldZone(e.clientX, e.clientY) || activeHoldZone;
+            activeHoldZone = null;
 
-                    const blobType = mediaRecorder.mimeType || mimeType || 'audio/webm';
-                    const audioBlob = new Blob(audioChunks, { type: blobType });
-                    const replySnapshot = activeReplyTo ? { ...activeReplyTo } : null;
-                    const reader = new FileReader();
-                    reader.onloadend = function() {
-                        if (reader.result) {
-                            pushMessageToCloud({
-                                sender: currentUser,
-                                text: '',
-                                image: null,
-                                audio: reader.result,
-                                pdf: null,
-                                time: getCurrentTime(),
-                                replyTo: replySnapshot
-                            });
-                            cancelReply();
-                        }
-                    };
-                    reader.readAsDataURL(audioBlob);
-                };
-
-                mediaRecorder.start();
-                isRecording = true;
-                voiceBtn.classList.add('recording');
-                voiceBtn.innerText = '⏹';
-            } catch (err) {
-                alert('تکایە مۆڵەتی مایکرۆفۆن بدە بۆ تۆمارکردنی ڤۆیس.');
+            if (finalZone === 'up') {
+                voiceState = 'locked';
+                updateVoiceUiState();
+            } else if (finalZone === 'left') {
+                discardVoiceRecording();
+            } else if (finalZone === 'right') {
+                pauseVoiceRecording();
+            } else {
+                finishVoiceFromBanner();
             }
-        } else {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-            isRecording = false;
-            voiceBtn.classList.remove('recording');
-            voiceBtn.innerText = '🎤';
-        }
+        };
+
+        voiceBtn.addEventListener('pointerup', handleHoldRelease);
+        voiceBtn.addEventListener('pointercancel', handleHoldRelease);
     }
 
     function saveAndRender() {
